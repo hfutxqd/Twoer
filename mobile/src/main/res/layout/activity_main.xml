@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="xyz.imxqd.ta.ui.activities.MainActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text"
+        android:textIsSelectable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <EditText
+        android:id="@+id/et_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="Send"
+        android:onClick="onSendBtnClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="xyz.imxqd.ta.ui.fragments.SoundRecordFragment"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+</LinearLayout>
