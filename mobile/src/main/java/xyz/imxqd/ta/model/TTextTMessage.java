@@ -1,6 +1,7 @@
 package xyz.imxqd.ta.model;
 
 import io.rong.imlib.model.MessageContent;
+import io.rong.message.TextMessage;
 import xyz.imxqd.ta.utils.UserSettings;
 
 import static xyz.imxqd.ta.Constants.SETTING_TARGET_ID;
@@ -9,20 +10,22 @@ import static xyz.imxqd.ta.Constants.SETTING_TARGET_ID;
  * Created by imxqd on 17-4-1.
  */
 
-public class TextMessage extends Message {
+public class TTextTMessage extends TMessage {
+    public static final String EXTRA_TEXT_FLAG = "text";
+
     private String text;
-    public TextMessage(String mTargetId) {
+    public TTextTMessage(String mTargetId) {
         super(mTargetId);
     }
 
-    public static TextMessage obtain(String text, String targetId) {
-        TextMessage message = new TextMessage(targetId);
+    public static TTextTMessage obtain(String text, String targetId) {
+        TTextTMessage message = new TTextTMessage(targetId);
         message.text = text;
         return message;
     }
 
-    public static TextMessage obtain(String text) {
-        TextMessage message = new TextMessage(UserSettings.readString(SETTING_TARGET_ID));
+    public static TTextTMessage obtain(String text) {
+        TTextTMessage message = new TTextTMessage(UserSettings.readString(SETTING_TARGET_ID));
         message.text = text;
         return message;
     }
@@ -42,6 +45,8 @@ public class TextMessage extends Message {
 
     @Override
     public MessageContent getContent() {
-        return io.rong.message.TextMessage.obtain(text);
+        TextMessage msg = TextMessage.obtain(text);
+        msg.setExtra(EXTRA_TEXT_FLAG);
+        return msg;
     }
 }

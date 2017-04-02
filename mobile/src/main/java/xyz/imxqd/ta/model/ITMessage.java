@@ -11,7 +11,7 @@ import io.rong.imlib.model.MessageContent;
  * Created by imxqd on 17-4-1.
  */
 
-public interface IMessage {
+public interface ITMessage {
     int TYPE_TEXT = 1;
     int TYPE_VOICE = 2;
     int TYPE_CMD = 4;
@@ -25,6 +25,6 @@ public interface IMessage {
 
     @Type int getMessageType();
 
-    String getRecipientId();
+    String getTargetId();
     MessageContent getContent();
 }

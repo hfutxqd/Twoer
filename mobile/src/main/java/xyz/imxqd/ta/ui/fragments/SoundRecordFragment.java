@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.media.AudioRecorder;
+import xyz.imxqd.ta.model.TVoiceMessage;
 
 
 /**
@@ -19,7 +20,7 @@ import xyz.imxqd.ta.media.AudioRecorder;
  */
 public class SoundRecordFragment extends BaseFragment implements View.OnTouchListener {
 
-    private static final int DISTANCE_Y_CANCEL = 50;
+    private static final int DISTANCE_Y_CANCEL = 80;
 
     private View mBgView;
     private TextView mText;
@@ -105,10 +106,12 @@ public class SoundRecordFragment extends BaseFragment implements View.OnTouchLis
             mText.setText(R.string.voice_press_to_record);
             if (isWantToCancel(x, y)) {
                 AudioRecorder.getInstance().cancel();
-                mCallback.onRecordingCancel();
+                mCallback.onSoundRecordingCancel();
             } else {
-                mCallback.onRecordingSend(AudioRecorder.getInstance().getCurrentFilePath());
                 AudioRecorder.getInstance().release();
+                String path = AudioRecorder.getInstance().getCurrentFilePath();
+                int du = AudioRecorder.getInstance().getCurrentFileDuration();
+                mCallback.onSoundRecordingSend(TVoiceMessage.obtain(path, du));
             }
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             isRecording = true;
@@ -173,8 +176,8 @@ public class SoundRecordFragment extends BaseFragment implements View.OnTouchLis
     }
 
     public interface RecordCallback {
-        void onRecordingCancel();
-        void onRecordingSend(String filename);
+        void onSoundRecordingCancel();
+        void onSoundRecordingSend(TVoiceMessage msg);
     }
 
 }

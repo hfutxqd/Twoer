@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import io.rong.imlib.IRongCallback;
@@ -19,9 +20,9 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
-import io.rong.push.RongPushClient;
+import io.rong.imlib.model.UserOnlineStatusInfo;
 import xyz.imxqd.ta.Constants;
-import xyz.imxqd.ta.model.IMessage;
+import xyz.imxqd.ta.model.ITMessage;
 import xyz.imxqd.ta.utils.UserSettings;
 
 import static xyz.imxqd.ta.Constants.SETTING_TARGET_ID;
@@ -108,28 +109,69 @@ public class Client extends RongIMClient.ConnectCallback {
 
     }
 
+    final static Object lock = new Object();
+    static Boolean isOnline = null;
+
+    public static boolean isUserOnline(final String userId) {
+        isOnline = null;
+        client.imClient.getUserOnlineStatus(userId, new IRongCallback.IGetUserOnlineStatusCallback() {
+
+            @Override
+            public void onSuccess(ArrayList<UserOnlineStatusInfo> arrayList) {
+                Log.d(TAG, "isUserOnline onSuccess : " + userId);
+                isOnline = (arrayList != null);
+                synchronized (lock) {
+                    isOnline = true;
+                    lock.notifyAll();
+                }
+            }
+
+            @Override
+            public void onError(int i) {
+                Log.e(TAG, "isUserOnline onError: " + i);
+                isOnline = false;
+               synchronized (lock) {
+                   isOnline = false;
+                   lock.notifyAll();
+               }
+            }
+        });
+        synchronized (lock) {
+            if (isOnline == null) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return isOnline;
+    }
+
     private static void send(String targetId, MessageContent content) {
+        Log.d(TAG, "send: " + content);
         client.imClient.sendMessage(Conversation.ConversationType.PRIVATE, targetId, content,
                 null, null, new IRongCallback.ISendMessageCallback() {
             @Override
             public void onAttached(Message message) {
-                Log.d(TAG, "onAttached: ");
+                Log.d(TAG, "send onAttached: " + message);
             }
 
             @Override
             public void onSuccess(Message message) {
-                Log.d(TAG, "onSuccess: ");
+                Log.d(TAG, "send onSuccess: " + message);
             }
 
             @Override
             public void onError(Message message, RongIMClient.ErrorCode errorCode) {
-                Log.e(TAG, "onError: ");
+                Log.e(TAG, "send onError: " + message);
             }
         });
     }
 
-    public static void sendMessage(IMessage msg) {
-        send(msg.getRecipientId(), msg.getContent());
+    public static void sendMessage(ITMessage msg) {
+        send(msg.getTargetId(), msg.getContent());
     }
 
     public void initToken() {

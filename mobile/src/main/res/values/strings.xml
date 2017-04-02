@@ -3,4 +3,8 @@
     <string name="voice_press_to_record">按下录音</string>
     <string name="voice_release_to_send">释放发送</string>
     <string name="voice_release_to_cancel">释放取消</string>
+    <string name="shock_press_to_record">按下震动</string>
+    <string name="shock_release_to_pause">释放暂停</string>
+    <string name="shock_release_to_cancel">释放取消</string>
+    <string name="shock_release_to_send">释放发送</string>
 </resources>

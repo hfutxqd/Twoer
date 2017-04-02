@@ -17,7 +17,9 @@ public class AudioRecorder {
 
 	private static AudioRecorder mInstance;
 
-	private boolean isPrepared; 
+	private boolean isPrepared;
+	private int duration = 0;
+    private long startTime = 0;
 
 	private AudioRecorder(String dir) {
 		mDir = dir;
@@ -45,6 +47,8 @@ public class AudioRecorder {
 		return mInstance;
 	}
 
+
+
 	public void prepareAudio() {
 
 		try {
@@ -70,7 +74,8 @@ public class AudioRecorder {
 			mMediaRecorder.prepare();
 
 			mMediaRecorder.start();
-			
+			startTime = System.currentTimeMillis();
+            duration = 0;
 			isPrepared = true; 
 
 			if (mListener != null) {
@@ -100,7 +105,8 @@ public class AudioRecorder {
 		try {
 			mMediaRecorder.stop();
 			mMediaRecorder.release();
-		} catch (IllegalStateException e) {
+            duration = (int) ((System.currentTimeMillis() - startTime) / 1000 + 0.5);
+        } catch (IllegalStateException e) {
 			e.printStackTrace();
 		}finally {
 			if(mMediaRecorder != null){
@@ -120,6 +126,10 @@ public class AudioRecorder {
 			mCurrentFilePath = null;
 		}
 	}
+
+	public int getCurrentFileDuration() {
+        return duration;
+    }
 
 	public String getCurrentFilePath() {
 		return mCurrentFilePath;

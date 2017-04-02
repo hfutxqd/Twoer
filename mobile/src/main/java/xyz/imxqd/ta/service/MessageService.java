@@ -1,37 +1,20 @@
 package xyz.imxqd.ta.service;
 
-import android.app.ActivityManager;
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 
-import com.mobvoi.android.common.ConnectionResult;
 import com.mobvoi.android.common.api.MobvoiApiClient;
-import com.mobvoi.android.common.api.ResultCallback;
 import com.mobvoi.android.wearable.DataApi;
 import com.mobvoi.android.wearable.DataEventBuffer;
 import com.mobvoi.android.wearable.MessageApi;
 import com.mobvoi.android.wearable.MessageEvent;
 import com.mobvoi.android.wearable.Node;
 import com.mobvoi.android.wearable.NodeApi;
-import com.mobvoi.android.wearable.PutDataMapRequest;
-import com.mobvoi.android.wearable.PutDataRequest;
 import com.mobvoi.android.wearable.Wearable;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Message;
@@ -39,12 +22,13 @@ import io.rong.imlib.model.MessageContent;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 import xyz.imxqd.ta.media.AudioPlayer;
-import xyz.imxqd.ta.ui.activities.MainActivity;
-import xyz.imxqd.ta.utils.Task;
+import xyz.imxqd.ta.model.TShockMessage;
+import xyz.imxqd.ta.model.TVoiceMessage;
 
-import static xyz.imxqd.ta.Constants.PATH_CMD_MESSAGE;
-import static xyz.imxqd.ta.Constants.PATH_TEXT_MESSAGE;
-import static xyz.imxqd.ta.Constants.PATH_VOICE_MESSAGE;
+import static xyz.imxqd.ta.model.TCmdMessage.CMD_GET_HEART_RATE;
+import static xyz.imxqd.ta.model.TCmdMessage.CMD_GET_STEPS;
+import static xyz.imxqd.ta.model.TCmdMessage.CMD_SHOCK;
+import static xyz.imxqd.ta.model.TTextTMessage.EXTRA_TEXT_FLAG;
 
 public class MessageService extends Service implements RongIMClient.OnReceiveMessageListener,
         MobvoiApiClient.ConnectionCallbacks , MessageApi.MessageListener, NodeApi.NodeListener, DataApi.DataListener {
@@ -77,44 +61,25 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
     @Override
     public boolean onReceived(Message message, int i) {
 
+        Log.d(TAG, "onReceived: " + i);
         MessageContent content = message.getContent();
         if (content instanceof VoiceMessage) {
-            VoiceMessage msg = (VoiceMessage) content;
-            Log.d(TAG, "onReceived: " + msg.getUri());
-            if (!Task.isForeground(MainActivity.class)) {
-                try {
-                    FileInputStream in = new FileInputStream(msg.getUri().getPath());
-                    byte[] data = new byte[in.available()];
-                    in.read(data);
-                    in.close();
-                    msg.setBase64(Base64.encodeToString(data, Base64.DEFAULT));
-                    if (mMobvoiApiClient.isConnected()) {
-                        Wearable.MessageApi.sendMessage(mMobvoiApiClient, null, PATH_VOICE_MESSAGE, msg.encode())
-                                .setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-                                    @Override
-                                    public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                                        Log.d(TAG, "onResult: " + sendMessageResult);
-                                    }
-                                });
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                AudioPlayer.playSound(msg.getUri(), null);
-            }
-
+            TVoiceMessage msg = TVoiceMessage.obtain((VoiceMessage)content);
+            msg.play();
         } else if (content instanceof  TextMessage) {
             TextMessage msg = (TextMessage) content;
-            Log.d(TAG, "onReceived: " + msg.getContent());
-            if (mMobvoiApiClient.isConnected()) {
-                Wearable.MessageApi.sendMessage(mMobvoiApiClient, null, PATH_TEXT_MESSAGE, msg.encode())
-                        .setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-                            @Override
-                            public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                                Log.d(TAG, "onResult: " + sendMessageResult);
-                            }
-                        });
+            switch (msg.getExtra()) {
+                case EXTRA_TEXT_FLAG:
+                    Log.d(TAG, "onReceived: " + msg.getContent());
+                    break;
+                case CMD_SHOCK:
+                    TShockMessage tmsg = TShockMessage.obtain(msg);
+                    tmsg.play();
+                    break;
+                case CMD_GET_STEPS:
+                    break;
+                case CMD_GET_HEART_RATE:
+                    break;
             }
         }
         return true;
