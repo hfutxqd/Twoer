@@ -6,23 +6,19 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.im.Client;
-import xyz.imxqd.ta.model.ITMessage;
-import xyz.imxqd.ta.model.TShockMessage;
-import xyz.imxqd.ta.model.TTextTMessage;
-import xyz.imxqd.ta.model.TVoiceMessage;
+import xyz.imxqd.ta.im.model.ITMessage;
+import xyz.imxqd.ta.im.model.TShockMessage;
+import xyz.imxqd.ta.im.model.TTextTMessage;
+import xyz.imxqd.ta.im.model.TVoiceMessage;
 import xyz.imxqd.ta.service.MessageService;
 import xyz.imxqd.ta.ui.fragments.ShockRecordFragment;
 import xyz.imxqd.ta.ui.fragments.SoundRecordFragment;
-import xyz.imxqd.ta.utils.Shocker;
 import xyz.imxqd.ta.utils.UserSettings;
 
 import static xyz.imxqd.ta.Constants.SETTING_TARGET_ID;

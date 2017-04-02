@@ -1,9 +1,8 @@
-package xyz.imxqd.ta.model;
+package xyz.imxqd.ta.im.model;
 
 import android.util.Base64;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 

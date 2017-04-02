@@ -22,7 +22,7 @@ import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserOnlineStatusInfo;
 import xyz.imxqd.ta.Constants;
-import xyz.imxqd.ta.model.ITMessage;
+import xyz.imxqd.ta.im.model.ITMessage;
 import xyz.imxqd.ta.utils.UserSettings;
 
 import static xyz.imxqd.ta.Constants.SETTING_TARGET_ID;
@@ -171,6 +171,7 @@ public class Client extends RongIMClient.ConnectCallback {
     }
 
     public static void sendMessage(ITMessage msg) {
+        Log.d(TAG, "sendMessage: " + msg.getTargetId());
         send(msg.getTargetId(), msg.getContent());
     }
 

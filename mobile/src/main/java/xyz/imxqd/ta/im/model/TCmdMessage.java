@@ -1,6 +1,5 @@
-package xyz.imxqd.ta.model;
+package xyz.imxqd.ta.im.model;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.StringDef;
 
 import java.lang.annotation.Retention;

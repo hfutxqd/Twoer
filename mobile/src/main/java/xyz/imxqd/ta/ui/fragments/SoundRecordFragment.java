@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.media.AudioRecorder;
-import xyz.imxqd.ta.model.TVoiceMessage;
+import xyz.imxqd.ta.im.model.TVoiceMessage;
 
 
 /**

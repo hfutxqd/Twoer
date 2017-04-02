@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import xyz.imxqd.ta.R;
-import xyz.imxqd.ta.model.TShockMessage;
+import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.utils.Shocker;
 
 public class ShockRecordFragment extends BaseFragment implements View.OnTouchListener {

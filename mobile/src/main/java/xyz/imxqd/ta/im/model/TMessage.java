@@ -1,4 +1,4 @@
-package xyz.imxqd.ta.model;
+package xyz.imxqd.ta.im.model;
 
 /**
  * Created by imxqd on 17-4-1.

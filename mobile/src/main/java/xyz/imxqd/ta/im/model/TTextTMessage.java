@@ -1,4 +1,4 @@
-package xyz.imxqd.ta.model;
+package xyz.imxqd.ta.im.model;
 
 import io.rong.imlib.model.MessageContent;
 import io.rong.message.TextMessage;

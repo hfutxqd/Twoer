@@ -21,14 +21,13 @@ import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
-import xyz.imxqd.ta.media.AudioPlayer;
-import xyz.imxqd.ta.model.TShockMessage;
-import xyz.imxqd.ta.model.TVoiceMessage;
+import xyz.imxqd.ta.im.model.TShockMessage;
+import xyz.imxqd.ta.im.model.TVoiceMessage;
 
-import static xyz.imxqd.ta.model.TCmdMessage.CMD_GET_HEART_RATE;
-import static xyz.imxqd.ta.model.TCmdMessage.CMD_GET_STEPS;
-import static xyz.imxqd.ta.model.TCmdMessage.CMD_SHOCK;
-import static xyz.imxqd.ta.model.TTextTMessage.EXTRA_TEXT_FLAG;
+import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_GET_HEART_RATE;
+import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_GET_STEPS;
+import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_SHOCK;
+import static xyz.imxqd.ta.im.model.TTextTMessage.EXTRA_TEXT_FLAG;
 
 public class MessageService extends Service implements RongIMClient.OnReceiveMessageListener,
         MobvoiApiClient.ConnectionCallbacks , MessageApi.MessageListener, NodeApi.NodeListener, DataApi.DataListener {
