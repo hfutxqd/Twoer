@@ -4,8 +4,10 @@ import android.net.Uri;
 
 import java.io.File;
 
+import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.message.VoiceMessage;
+import xyz.imxqd.ta.App;
 import xyz.imxqd.ta.media.AudioPlayer;
 import xyz.imxqd.ta.utils.UserSettings;
 
@@ -20,25 +22,27 @@ public class TVoiceMessage extends TMessage {
     private Uri uri;
     private int duration;
 
-    public TVoiceMessage(String mTargetId) {
-        super(mTargetId);
+    public TVoiceMessage(String targetId, String senderId) {
+        super(targetId, senderId);
     }
 
     public static TVoiceMessage obtain(String path, String targetId) {
-        TVoiceMessage message = new TVoiceMessage(targetId);
+        TVoiceMessage message = new TVoiceMessage(targetId, UserSettings.getUserId(App.get()));
         message.uri = Uri.fromFile(new File(path));
         return message;
     }
 
     public static TVoiceMessage obtain(String path, int duration) {
-        TVoiceMessage message = new TVoiceMessage(UserSettings.readString(SETTING_TARGET_ID));
+        TVoiceMessage message = new TVoiceMessage(UserSettings.readString(SETTING_TARGET_ID)
+        , UserSettings.getUserId(App.get()));
         message.uri = Uri.fromFile(new File(path));
         message.duration = duration;
         return message;
     }
 
-    public static TVoiceMessage obtain(VoiceMessage message) {
-        TVoiceMessage msg = new TVoiceMessage(UserSettings.readString(SETTING_TARGET_ID));
+    public static TVoiceMessage obtain(Message m) {
+        VoiceMessage message = (VoiceMessage) m.getContent();
+        TVoiceMessage msg = new TVoiceMessage(m.getTargetId(), m.getSenderUserId());
         msg.uri = message.getUri();
         msg.duration = message.getDuration();
         return msg;

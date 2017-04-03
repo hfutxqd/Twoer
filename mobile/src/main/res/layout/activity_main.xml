@@ -18,5 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="200dp" />
 
-
+    <Button
+        android:text="Game"
+        android:onClick="onGameClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

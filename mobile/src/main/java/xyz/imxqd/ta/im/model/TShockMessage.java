@@ -6,8 +6,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.message.TextMessage;
+import xyz.imxqd.ta.App;
 import xyz.imxqd.ta.utils.Serializer;
 import xyz.imxqd.ta.utils.Shocker;
 import xyz.imxqd.ta.utils.UserSettings;
@@ -22,26 +24,28 @@ public class TShockMessage extends TCmdMessage {
 
     private List<Long> list;
 
-    public TShockMessage(String mTargetId) {
-        super(mTargetId);
+    public TShockMessage(String targetId, String senderId) {
+        super(targetId, senderId);
         list = new ArrayList<>(2);
     }
 
     public static TShockMessage obtain() {
-        TShockMessage message = new TShockMessage(UserSettings.readString(SETTING_TARGET_ID));
+        TShockMessage message = new TShockMessage(UserSettings.readString(SETTING_TARGET_ID),
+                UserSettings.getUserId(App.get()));
         return message;
     }
 
     public static TShockMessage obtain(String targetId) {
-        TShockMessage message = new TShockMessage(targetId);
+        TShockMessage message = new TShockMessage(targetId, UserSettings.getUserId(App.get()));
         return message;
     }
 
-    public static TShockMessage obtain(TextMessage msg) {
-        TShockMessage message = obtain();
+    public static TShockMessage obtain(Message message) {
+        TextMessage msg = (TextMessage) message.getContent();
+        TShockMessage shockMessage = new TShockMessage(message.getTargetId(), message.getSenderUserId());
         byte[] data = Base64.decode(msg.getContent(), Base64.DEFAULT);
-        message.list = (List<Long>) Serializer.byteToObject(data);
-        return message;
+        shockMessage.list = (List<Long>) Serializer.byteToObject(data);
+        return shockMessage;
     }
 
     public List<Long> getList() {

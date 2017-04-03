@@ -18,15 +18,19 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (app == null) {
-            Client.init(this);
-            app = this;
-            startService(new Intent(this, WatchService.class));
-            startService(new Intent(this, MessageService.class));
-        }
+        Client.init(this);
+        app = this;
+        startService(new Intent(this, WatchService.class));
+        startService(new Intent(this, MessageService.class));
     }
 
     public static App get() {
+        if (app != null) {
+            return app;
+        } else {
+            app = new App();
+            app.onCreate();
+        }
         return app;
     }
 

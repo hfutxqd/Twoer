@@ -7,9 +7,24 @@ package xyz.imxqd.ta.im.model;
 public abstract class TMessage implements ITMessage {
 
     private String mTargetId;
+    private String mSenderId;
 
-    public TMessage(String mTargetId) {
+    public TMessage(String targetId, String senderId) {
+        this.mTargetId = targetId;
+        this.mSenderId = senderId;
+    }
+
+    public void setTargetId(String mTargetId) {
         this.mTargetId = mTargetId;
+    }
+
+    @Override
+    public String getSenderId() {
+        return mSenderId;
+    }
+
+    public void setSenderId(String mSenderId) {
+        this.mSenderId = mSenderId;
     }
 
     @Override

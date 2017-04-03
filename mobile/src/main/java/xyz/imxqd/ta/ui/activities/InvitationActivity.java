@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 
 import xyz.imxqd.ta.Constants;
@@ -58,7 +57,7 @@ public class InvitationActivity extends AppCompatActivity implements View.OnClic
             case R.id.tv_confirm_panel:
                 UserSettings.save(Constants.SETTING_TARGET_ID, mSendId);
                 UserSettings.save(Constants.SETTING_ACCEPTED, true);
-                TBindMessage message = TBindMessage.obtain(mSendId, UserSettings.getAndroidId(this));
+                TBindMessage message = TBindMessage.obtain(mSendId, UserSettings.getUserId(this));
                 Client.sendMessage(message);
                 break;
             case R.id.tv_cancel_panel:

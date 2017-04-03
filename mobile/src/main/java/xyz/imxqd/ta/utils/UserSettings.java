@@ -37,7 +37,7 @@ public class UserSettings {
         return preferences.getBoolean(key, false);
     }
 
-    public static String getAndroidId(Context context) {
+    public static String getUserId(Context context) {
         return Settings.System.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
     }

@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import xyz.imxqd.ta.R;
+import xyz.imxqd.ta.game.OnGameStatusChangeListener;
+import xyz.imxqd.ta.game.WuziqiPanel;
 import xyz.imxqd.ta.im.Client;
 import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements SoundRecordFragme
             startActivity(new Intent(this, FirstActivity.class));
             finish();
         }
-
     }
 
     boolean isServiceConnected = false;
@@ -97,4 +99,7 @@ public class MainActivity extends AppCompatActivity implements SoundRecordFragme
         isServiceConnected = false;
     }
 
+    public void onGameClick(View view) {
+        startActivity(new Intent(this, GameActivity.class));
+    }
 }

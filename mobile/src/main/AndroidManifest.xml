@@ -38,10 +38,13 @@
         <activity
             android:name=".ui.activities.FirstActivity"
             android:theme="@style/CustomWelcomeScreenTheme" />
-
         <activity
             android:name=".ui.activities.InvitationActivity"
-            android:theme="@style/DialogActivity"/>
+            android:theme="@style/DialogActivity" />
+
+        <activity
+            android:name=".ui.activities.GameActivity"
+            android:label="@string/title_activity_game"/>
 
         <!-- imlib config begin -->
         <meta-data
@@ -119,6 +122,8 @@
             android:name=".service.WatchService"
             android:enabled="true"
             android:exported="true" />
+
+
     </application>
 
 </manifest>

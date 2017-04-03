@@ -17,18 +17,21 @@ public abstract class TCmdMessage extends TMessage {
     public static final String CMD_GET_STEPS = "CMD_GET_STEPS";
     public static final String CMD_GET_HEART_RATE = "CMD_GET_HEART_RATE";
     public static final String CMD_BIND = "CMD_BIND";
+    public static final String CMD_GAME = "CMD_GAME";
+
     @StringDef({
             CMD_SHOCK,
             CMD_GET_STEPS,
             CMD_GET_HEART_RATE,
-            CMD_BIND
+            CMD_BIND,
+            CMD_GAME
     })
     @Retention(RetentionPolicy.SOURCE)
     @interface Cmd {}
 
 
-    public TCmdMessage(String mTargetId) {
-        super(mTargetId);
+    public TCmdMessage(String targetId, String senderId) {
+        super(targetId,senderId);
     }
 
     @Override

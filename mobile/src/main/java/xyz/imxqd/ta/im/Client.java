@@ -3,7 +3,6 @@ package xyz.imxqd.ta.im;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 
 import org.apache.commons.codec_android.digest.DigestUtils;
@@ -18,7 +17,6 @@ import java.util.Random;
 import io.rong.imlib.IRongCallback;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
-import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserOnlineStatusInfo;
 import xyz.imxqd.ta.Constants;
@@ -91,7 +89,7 @@ public class Client extends RongIMClient.ConnectCallback {
                 PATH_AUDIO = cache.getAbsolutePath();
             }
             client.mContext = context;
-            client.mUserId = UserSettings.getAndroidId(context);
+            client.mUserId = UserSettings.getUserId(context);
             client.initToken();
             client.imClient = RongIMClient.getInstance();
         }

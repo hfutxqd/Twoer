@@ -26,5 +26,6 @@ public interface ITMessage {
     @Type int getMessageType();
 
     String getTargetId();
+    String getSenderId();
     MessageContent getContent();
 }

@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.stephentuso.welcome.BasicPage;
@@ -16,8 +15,6 @@ import com.stephentuso.welcome.FragmentWelcomePage;
 import com.stephentuso.welcome.TitlePage;
 import com.stephentuso.welcome.WelcomeActivity;
 import com.stephentuso.welcome.WelcomeConfiguration;
-
-import java.util.Locale;
 
 import io.rong.imlib.IRongCallback;
 import io.rong.imlib.RongIMClient;
@@ -76,7 +73,7 @@ public class FirstActivity extends WelcomeActivity implements IRongCallback.ISen
     @Override
     protected WelcomeConfiguration configuration() {
 
-        mId = UserSettings.getAndroidId(this);
+        mId = UserSettings.getUserId(this);
         bitmap = QrUtils.generateQRCode(mId);
         fragment = BindFragment.newInstance(bitmap);
         FragmentWelcomePage page = new FragmentWelcomePage() {
@@ -115,7 +112,7 @@ public class FirstActivity extends WelcomeActivity implements IRongCallback.ISen
             String targetId = data.getStringExtra(QrCodeActivity.RESULT_KEY);
             UserSettings.save(Constants.SETTING_TARGET_ID, targetId);
             Client.setTargetId(targetId);
-            mBindMessage = TBindMessage.obtain(targetId, UserSettings.getAndroidId(this));
+            mBindMessage = TBindMessage.obtain(targetId, UserSettings.getUserId(this));
             Client.sendMessage(mBindMessage, this);
         }
         super.onActivityResult(requestCode, resultCode, data);

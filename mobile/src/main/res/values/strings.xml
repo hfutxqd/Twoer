@@ -37,6 +37,7 @@
     <string name="bind_message_accept">对方已接受你的请求</string>
     <string name="shock_btn_clear">清空</string>
     <string name="shock_btn_send">发送</string>
+    <string name="title_activity_game">五子棋</string>
 
 
 </resources>

@@ -76,7 +76,7 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
         Log.d(TAG, "onReceived: " + i);
         MessageContent content = message.getContent();
         if (content instanceof VoiceMessage) {
-            TVoiceMessage msg = TVoiceMessage.obtain((VoiceMessage)content);
+            TVoiceMessage msg = TVoiceMessage.obtain((message));
             msg.play();
         } else if (content instanceof  TextMessage) {
             TextMessage msg = (TextMessage) content;
@@ -84,7 +84,7 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
             switch (msg.getExtra()) {
                 case CMD_BIND: {
                     TBindMessage m = TBindMessage.obtain(message);
-                    if (m.getSender().equals(UserSettings.readString(Constants.SETTING_TARGET_ID))) {
+                    if (m.getSenderId().equals(UserSettings.readString(Constants.SETTING_TARGET_ID))) {
                         UserSettings.save(Constants.SETTING_ACCEPTED, true);
                         if (mBindCallback != null) {
                             mHander.post(new Runnable() {
@@ -95,7 +95,7 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
                             });
                         }
                     } else {
-                        InvitationActivity.start(m.getSender(), m.getRandomCode(), getApplicationContext());
+                        InvitationActivity.start(m.getSenderId(), m.getRandomCode(), getApplicationContext());
                     }
                 }
 
@@ -106,7 +106,7 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
 
                     break;
                 case CMD_SHOCK: {
-                    TShockMessage tmsg = TShockMessage.obtain(msg);
+                    TShockMessage tmsg = TShockMessage.obtain(message);
                     tmsg.play();
                 }
                     break;

@@ -8,8 +8,8 @@ import io.rong.imlib.model.MessageContent;
 
 public class TStepsMessage extends TCmdMessage {
 
-    public TStepsMessage(String mTargetId) {
-        super(mTargetId);
+    public TStepsMessage(String targetId, String senderId) {
+        super(targetId, senderId);
     }
 
     @Override
