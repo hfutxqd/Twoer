@@ -1,11 +1,47 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DialogActivity" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="CustomWelcomeScreenTheme" parent="WelcomeScreenTheme">
+        <item name="welcomeButtonBarFirstStyle">@style/CustomWelcomeButtonBarFirstStyle</item>
+    </style>
+
+    <style name="CustomWelcomeButtonBarFirstStyle" parent="WelcomeScreenTheme">
+        <item name="android:text">@string/bind_fragment_scan</item>
+    </style>
+
+
+    <style name="SelectableItemForeground">
+        <item name="android:foreground">@drawable/selectable_item_background</item>
+    </style>
+
+    <style name="SelectableItemForeground.Light">
+        <item name="android:foreground">@drawable/selectable_item_background_light</item>
+    </style>
+
+    <style name="SelectableItemBackground">
+        <item name="android:background">@drawable/selectable_item_background</item>
+    </style>
+
+    <style name="SelectableItemBackground.Light">
+        <item name="android:background">@drawable/selectable_item_background_light</item>
+    </style>
+
+    <style name="SelectableItemBackground.Borderless">
+        <item name="android:background">@drawable/selectable_item_background</item>
+
     </style>
 
 </resources>

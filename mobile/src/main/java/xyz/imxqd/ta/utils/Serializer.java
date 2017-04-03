@@ -1,5 +1,7 @@
 package xyz.imxqd.ta.utils;
 
+import android.util.Base64;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -38,9 +40,31 @@ public class Serializer {
             bi.close();
             oi.close();
         } catch (Exception e) {
-            System.out.println("translation" + e.getMessage());
+
             e.printStackTrace();
         }
         return obj;
+    }
+
+    public static String objectToBase64(Serializable obj) {
+        byte[] bytes = null;
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream oo = new ObjectOutputStream(bo);
+            oo.writeObject(obj);
+
+            bytes = bo.toByteArray();
+
+            bo.close();
+            oo.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    public static Serializable base64ToObject(String base64) {
+        byte[] data = Base64.decode(base64, Base64.DEFAULT);
+        return byteToObject(data);
     }
 }

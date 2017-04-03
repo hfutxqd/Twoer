@@ -30,6 +30,12 @@ public class TTextTMessage extends TMessage {
         return message;
     }
 
+    public static TTextTMessage obtain(TextMessage text) {
+        TTextTMessage message = new TTextTMessage(UserSettings.readString(SETTING_TARGET_ID));
+        message.text = text.getContent();
+        return message;
+    }
+
     public String getText() {
         return text;
     }

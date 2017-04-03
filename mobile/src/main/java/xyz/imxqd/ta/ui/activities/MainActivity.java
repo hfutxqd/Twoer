@@ -6,21 +6,19 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.util.Log;
 
 import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.im.Client;
-import xyz.imxqd.ta.im.model.ITMessage;
 import xyz.imxqd.ta.im.model.TShockMessage;
-import xyz.imxqd.ta.im.model.TTextTMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
+import xyz.imxqd.ta.qrcode.QrCodeActivity;
 import xyz.imxqd.ta.service.MessageService;
 import xyz.imxqd.ta.ui.fragments.ShockRecordFragment;
 import xyz.imxqd.ta.ui.fragments.SoundRecordFragment;
 import xyz.imxqd.ta.utils.UserSettings;
 
+import static xyz.imxqd.ta.Constants.SETTING_ACCEPTED;
 import static xyz.imxqd.ta.Constants.SETTING_TARGET_ID;
 
 public class MainActivity extends AppCompatActivity implements SoundRecordFragment.RecordCallback,
@@ -28,21 +26,18 @@ public class MainActivity extends AppCompatActivity implements SoundRecordFragme
 
     private static final String TAG = "MainActivity";
 
-    private EditText editText;
-
     private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView tv = (TextView) findViewById(R.id.text);
-        editText = (EditText) findViewById(R.id.et_user_id);
         id = UserSettings.readString(SETTING_TARGET_ID);
-        if (id != null) {
-            editText.setText(id);
+        if (id == null || !UserSettings.readBoolean(SETTING_ACCEPTED)) {
+            startActivity(new Intent(this, FirstActivity.class));
+            finish();
         }
-        tv.setText(Client.getUserId());
+
     }
 
     boolean isServiceConnected = false;
@@ -64,11 +59,12 @@ public class MainActivity extends AppCompatActivity implements SoundRecordFragme
         super.onStop();
     }
 
-    public void onSendBtnClick(View view) {
-        id = editText.getText().toString();
-        UserSettings.save(SETTING_TARGET_ID, id);
-        ITMessage msg = TTextTMessage.obtain("Test...", id);
-        Client.sendMessage(msg);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Log.d(TAG, "onActivityResult: " + data.getStringExtra(QrCodeActivity.RESULT_KEY));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

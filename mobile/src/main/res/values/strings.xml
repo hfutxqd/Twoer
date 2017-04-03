@@ -7,4 +7,36 @@
     <string name="shock_release_to_pause">释放暂停</string>
     <string name="shock_release_to_cancel">释放取消</string>
     <string name="shock_release_to_send">释放发送</string>
+
+
+    <!--扫一扫-->
+    <string name="title_activity_scan_qr_code">扫一扫</string>
+    <string name="qc_code_close">关闭</string>
+    <string name="qr_code_select_picture">照片</string>
+    <string name="qr_code_open_flash_light">打开闪光灯</string>
+    <string name="qr_code_close_flash_light">关闭闪光灯</string>
+    <string name="qr_code_auto_scan_notification">将二维码放入框内，即可自动扫描</string>
+    <string name="qr_code_notification">提示</string>
+    <string name="qr_code_camera_not_open">您的相机功能好像没有打开哦~去\"设置>隐私>相机\"设置一下吧</string>
+    <string name="qr_code_positive_button_know">知道了</string>
+    <string name="qr_code_positive_button_confirm">确认</string>
+    <string name="qr_code_could_not_read_qr_code_from_picture">没有读出图片中的二维码，换张图片试试吧~</string>
+    <string name="qr_code_could_not_read_qr_code_from_scanner">对不起，无法打开扫出的内容</string>
+    <string name="qr_code_camera_not_found">未检测到相机</string>
+    <string name="qrcode_menu_photo">照片</string>
+    <string name="fisrt_title_1">给最亲密的TA</string>
+    <string name="fisrt_title_2">绑定帐号</string>
+    <string name="fisrt_des_2">向左滑动，扫描二维码绑定帐号</string>
+    <string name="bind_fragment_scan">扫一扫</string>
+    <string name="bind_message_success">邀请消息发送成功，请等待对方同意</string>
+    <string name="bind_message_error">邀请消息发送出错，可能是网络原因</string>
+    <string name="fisrt_bind_code">请对方确认验证码：\n%1$s</string>
+    <string name="invitation_accept">接受</string>
+    <string name="invitation_reject">拒绝</string>
+    <string name="invitation_text">你收到了一个绑定邀请，验证码为：\n%1$s</string>
+    <string name="bind_message_accept">对方已接受你的请求</string>
+    <string name="shock_btn_clear">清空</string>
+    <string name="shock_btn_send">发送</string>
+
+
 </resources>

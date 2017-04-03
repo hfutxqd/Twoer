@@ -14,7 +14,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".App"
@@ -31,6 +32,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".qrcode.QrCodeActivity"
+            android:label="@string/title_activity_scan_qr_code" />
+        <activity
+            android:name=".ui.activities.FirstActivity"
+            android:theme="@style/CustomWelcomeScreenTheme" />
+
+        <activity
+            android:name=".ui.activities.InvitationActivity"
+            android:theme="@style/DialogActivity"/>
 
         <!-- imlib config begin -->
         <meta-data
@@ -107,7 +118,7 @@
         <service
             android:name=".service.WatchService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
     </application>
 
 </manifest>

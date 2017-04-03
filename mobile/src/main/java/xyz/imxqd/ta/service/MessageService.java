@@ -4,8 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mobvoi.android.common.api.MobvoiApiClient;
 import com.mobvoi.android.wearable.DataApi;
@@ -21,9 +24,15 @@ import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
+import xyz.imxqd.ta.Constants;
+import xyz.imxqd.ta.R;
+import xyz.imxqd.ta.im.model.TBindMessage;
 import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
+import xyz.imxqd.ta.ui.activities.InvitationActivity;
+import xyz.imxqd.ta.utils.UserSettings;
 
+import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_BIND;
 import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_GET_HEART_RATE;
 import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_GET_STEPS;
 import static xyz.imxqd.ta.im.model.TCmdMessage.CMD_SHOCK;
@@ -36,6 +45,10 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
 
     private MessageBinder mBinder;
     private MobvoiApiClient mMobvoiApiClient;
+
+    private BindCallback mBindCallback;
+
+    private Handler mHander = new Handler(Looper.getMainLooper());
 
 
     public MessageService() {
@@ -67,17 +80,43 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
             msg.play();
         } else if (content instanceof  TextMessage) {
             TextMessage msg = (TextMessage) content;
+            Log.d(TAG, "onReceived: " + msg.getContent());
             switch (msg.getExtra()) {
-                case EXTRA_TEXT_FLAG:
-                    Log.d(TAG, "onReceived: " + msg.getContent());
+                case CMD_BIND: {
+                    TBindMessage m = TBindMessage.obtain(message);
+                    if (m.getSender().equals(UserSettings.readString(Constants.SETTING_TARGET_ID))) {
+                        UserSettings.save(Constants.SETTING_ACCEPTED, true);
+                        if (mBindCallback != null) {
+                            mHander.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBindCallback.onAccept();
+                                }
+                            });
+                        }
+                    } else {
+                        InvitationActivity.start(m.getSender(), m.getRandomCode(), getApplicationContext());
+                    }
+                }
+
                     break;
-                case CMD_SHOCK:
+                case EXTRA_TEXT_FLAG: {
+                    Log.d(TAG, "onReceived: " + msg.getContent());
+                }
+
+                    break;
+                case CMD_SHOCK: {
                     TShockMessage tmsg = TShockMessage.obtain(msg);
                     tmsg.play();
+                }
                     break;
-                case CMD_GET_STEPS:
+                case CMD_GET_STEPS: {
+
+                }
                     break;
-                case CMD_GET_HEART_RATE:
+                case CMD_GET_HEART_RATE: {
+
+                }
                     break;
             }
         }
@@ -118,6 +157,12 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
     }
 
     public class MessageBinder extends Binder {
+        public void setBindCallback(BindCallback callback) {
+            mBindCallback = callback;
+        }
+    }
 
+    public interface BindCallback {
+        void onAccept();
     }
 }

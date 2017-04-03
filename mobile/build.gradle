@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "xyz.imxqd.ta"
         minSdkVersion 18
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
@@ -52,9 +52,10 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-wearable:10.2.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.hwangjr.rxbus:rxbus:1.0.5'
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.ticwear:mobvoi-api-gms-china:1.0.3'
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.google.zxing:core:3.3.0'
+    compile 'com.stephentuso:welcome:1.2.1'
 }

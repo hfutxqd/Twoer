@@ -48,7 +48,7 @@ public class Client extends RongIMClient.ConnectCallback {
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     static {
-        System.loadLibrary("tool-lib");
+        System.loadLibrary("Client");
     }
 
     private Client() {
@@ -85,13 +85,13 @@ public class Client extends RongIMClient.ConnectCallback {
         if (client == null) {
             RongIMClient.init(context);
             client = new Client();
-            client.mUserId = Settings.System.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID);
+
             File cache = context.getExternalCacheDir();
             if (cache != null) {
                 PATH_AUDIO = cache.getAbsolutePath();
             }
             client.mContext = context;
+            client.mUserId = UserSettings.getAndroidId(context);
             client.initToken();
             client.imClient = RongIMClient.getInstance();
         }
@@ -149,30 +149,20 @@ public class Client extends RongIMClient.ConnectCallback {
         return isOnline;
     }
 
-    private static void send(String targetId, MessageContent content) {
+    private static void send(String targetId, MessageContent content, IRongCallback.ISendMessageCallback callback) {
         Log.d(TAG, "send: " + content);
         client.imClient.sendMessage(Conversation.ConversationType.PRIVATE, targetId, content,
-                null, null, new IRongCallback.ISendMessageCallback() {
-            @Override
-            public void onAttached(Message message) {
-                Log.d(TAG, "send onAttached: " + message);
-            }
-
-            @Override
-            public void onSuccess(Message message) {
-                Log.d(TAG, "send onSuccess: " + message);
-            }
-
-            @Override
-            public void onError(Message message, RongIMClient.ErrorCode errorCode) {
-                Log.e(TAG, "send onError: " + message);
-            }
-        });
+                null, null, callback);
     }
 
     public static void sendMessage(ITMessage msg) {
         Log.d(TAG, "sendMessage: " + msg.getTargetId());
-        send(msg.getTargetId(), msg.getContent());
+        send(msg.getTargetId(), msg.getContent(), null);
+    }
+
+    public static void sendMessage(ITMessage msg, IRongCallback.ISendMessageCallback callback) {
+        Log.d(TAG, "sendMessage: " + msg.getTargetId());
+        send(msg.getTargetId(), msg.getContent(), callback);
     }
 
     public void initToken() {

@@ -16,10 +16,12 @@ public abstract class TCmdMessage extends TMessage {
     public static final String CMD_SHOCK = "CMD_SHOCK";
     public static final String CMD_GET_STEPS = "CMD_GET_STEPS";
     public static final String CMD_GET_HEART_RATE = "CMD_GET_HEART_RATE";
+    public static final String CMD_BIND = "CMD_BIND";
     @StringDef({
             CMD_SHOCK,
             CMD_GET_STEPS,
-            CMD_GET_HEART_RATE
+            CMD_GET_HEART_RATE,
+            CMD_BIND
     })
     @Retention(RetentionPolicy.SOURCE)
     @interface Cmd {}

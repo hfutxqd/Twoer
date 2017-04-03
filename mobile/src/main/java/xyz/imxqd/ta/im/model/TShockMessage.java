@@ -57,6 +57,11 @@ public class TShockMessage extends TCmdMessage {
         return CMD_SHOCK;
     }
 
+    public String toMorse() {
+
+        return null;
+    }
+
     public void play() {
         long[] data = new long[list.size()];
         for (int i = 0; i < list.size(); i++) {

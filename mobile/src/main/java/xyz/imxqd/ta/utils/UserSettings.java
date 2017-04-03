@@ -2,6 +2,7 @@ package xyz.imxqd.ta.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 
 import xyz.imxqd.ta.App;
 
@@ -19,8 +20,25 @@ public class UserSettings {
                 .apply();
     }
 
+    public static void save(String key, boolean value) {
+        SharedPreferences preferences = App.get().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        preferences.edit()
+                .putBoolean(key, value)
+                .apply();
+    }
+
     public static String readString(String key) {
         SharedPreferences preferences = App.get().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return preferences.getString(key, null);
+    }
+
+    public static boolean readBoolean(String key) {
+        SharedPreferences preferences = App.get().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        return preferences.getBoolean(key, false);
+    }
+
+    public static String getAndroidId(Context context) {
+        return Settings.System.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
     }
 }
