@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.View;
 
 import xyz.imxqd.ta.R;
-import xyz.imxqd.ta.game.OnGameStatusChangeListener;
-import xyz.imxqd.ta.game.WuziqiPanel;
 import xyz.imxqd.ta.im.Client;
 import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;

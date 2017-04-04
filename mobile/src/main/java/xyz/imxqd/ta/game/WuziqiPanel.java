@@ -10,11 +10,14 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +29,14 @@ import xyz.imxqd.ta.R;
 
 public class WuziqiPanel extends View {
     private static final String TAG = "WuziqiPanel";
+
+    public static final int TYPE_BLACK = 0;
+    public static final int TYPE_WHITE = 1;
+    @IntDef({
+            TYPE_BLACK, TYPE_WHITE
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Type {}
 
     private int mPanelWidth ;       //棋盘宽度
     private float mLineHeight;      //棋盘单行间距
@@ -41,7 +52,7 @@ public class WuziqiPanel extends View {
     private final float RATIO_PIECE_OF_LINE_HEIGHT = 3 * 1.0f / 4;
 
     //是否将要下白棋
-    private boolean mIsWhite = true;
+    private boolean mIsWhite = false;
     //已下的白棋的列表
     private ArrayList<Point> mWhitePieceArray = new ArrayList<>();
     //已下的黑棋的列表
@@ -384,9 +395,15 @@ public class WuziqiPanel extends View {
             }
 
             if (mIsWhite) {
+                if (listener != null) {
+                    listener.onPlacePiece(TYPE_WHITE, p);
+                }
                 mWhitePieceArray.add(p);
             } else {
                 mBlackPieceArray.add(p);
+                if (listener != null) {
+                    listener.onPlacePiece(TYPE_BLACK, p);
+                }
             }
             invalidate();
             mIsWhite = !mIsWhite;

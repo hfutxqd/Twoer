@@ -1,9 +1,11 @@
 package xyz.imxqd.ta.ui.activities;
 
 import android.content.DialogInterface;
+import android.graphics.Point;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 
 import xyz.imxqd.ta.R;
@@ -11,6 +13,8 @@ import xyz.imxqd.ta.game.OnGameStatusChangeListener;
 import xyz.imxqd.ta.game.WuziqiPanel;
 
 public class GameActivity extends AppCompatActivity {
+
+    private static final String TAG = "GameActivity";
 
     private WuziqiPanel mGamePanel;
     private AlertDialog.Builder alertBuilder;
@@ -41,6 +45,12 @@ public class GameActivity extends AppCompatActivity {
 
         mGamePanel = (WuziqiPanel) findViewById(R.id.id_wuziqi);
         mGamePanel.setOnGameStatusChangeListener(new OnGameStatusChangeListener() {
+            @Override
+            public void onPlacePiece(int type, Point point) {
+                Log.d(TAG, "onPlacePiece: " + type);
+                Log.d(TAG, "onPlacePiece: " + point.toString());
+            }
+
             @Override
             public void onGameOver(int gameWinResult) {
                 switch (gameWinResult) {
