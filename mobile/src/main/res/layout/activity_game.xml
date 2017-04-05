@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:panel_background="@null"
-        app:panel_line_color="#C00"
-        app:white_piece_img="@drawable/stone_w2"
-        app:black_piece_img="@drawable/stone_b1"
-        app:max_count_line="11"
+        app:panel_line_color="@color/red_500"
+        app:white_piece_img="@drawable/stone_white"
+        app:black_piece_img="@drawable/stone_black"
+        app:max_count_line="15"
         app:max_win_count_piece="5"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/game_view_pager"

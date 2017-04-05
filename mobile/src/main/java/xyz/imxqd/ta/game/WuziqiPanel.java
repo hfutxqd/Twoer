@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
@@ -62,6 +63,11 @@ public class WuziqiPanel extends View {
     private ArrayList<Point> mWhitePieceArray = new ArrayList<>();
     //已下的黑棋的列表
     private ArrayList<Point> mBlackPieceArray = new ArrayList<>();
+
+    // 防止误触，类似于光标的棋子
+    private Point mPieceHolder;
+
+    private Bitmap mHolderBitmap;
 
     //游戏是否结束
     private boolean mIsGameOver;
@@ -131,15 +137,23 @@ public class WuziqiPanel extends View {
 
     //初始化游戏数据
     private void init() {
+        Drawable drawable = getResources().getDrawable(R.drawable.stone_holder);
+        int w = drawable.getIntrinsicWidth();
+        int h = drawable.getIntrinsicHeight();
+        mHolderBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mHolderBitmap);
+        drawable.setBounds(0, 0, w, h);
+        drawable.draw(canvas);
+
         mPaint.setColor(mPanelLineColor);
         mPaint.setAntiAlias(true);//抗锯齿
         mPaint.setDither(true);//防抖动
         mPaint.setStyle(Paint.Style.FILL);
         if (mWhitePiece == null) {
-            mWhitePiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_w2);
+            mWhitePiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_white);
         }
         if (mBlackPiece == null) {
-            mBlackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_b1);
+            mBlackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_black);
         }
     }
 
@@ -173,12 +187,14 @@ public class WuziqiPanel extends View {
         int pieceWidth = (int) (mLineHeight * RATIO_PIECE_OF_LINE_HEIGHT);
         mWhitePiece = Bitmap.createScaledBitmap(mWhitePiece, pieceWidth, pieceWidth, false);
         mBlackPiece = Bitmap.createScaledBitmap(mBlackPiece, pieceWidth, pieceWidth, false);
+        mHolderBitmap = Bitmap.createScaledBitmap(mHolderBitmap, pieceWidth + 4, pieceWidth + 4, false);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBoard(canvas);
+        drawPieceHolder(canvas);
         drawPiece(canvas);
         checkGameOver();
     }
@@ -187,6 +203,7 @@ public class WuziqiPanel extends View {
     public void restartGame() {
         mWhitePieceArray.clear();
         mBlackPieceArray.clear();
+        mPieceHolder = null;
         mIsGameOver = false;
         mGameWinResult = INIT_WIN;
         invalidate();
@@ -354,6 +371,14 @@ public class WuziqiPanel extends View {
         return false;
     }
 
+    private void drawPieceHolder(Canvas canvas) {
+        if (mPieceHolder != null) {
+            canvas.drawBitmap(mHolderBitmap,
+                    (mPieceHolder.x + (1 - mHolderBitmap.getHeight() / mLineHeight) / 2) * mLineHeight,
+                    (mPieceHolder.y + (1 - mHolderBitmap.getHeight() / mLineHeight) / 2) * mLineHeight + 1, null);
+        }
+    }
+
     //绘制棋子
     private void drawPiece(Canvas canvas) {
         for (int i = 0, n = mWhitePieceArray.size(); i < n; i++) {
@@ -441,6 +466,7 @@ public class WuziqiPanel extends View {
         } else if (!mIsWhite && mDisableType == TYPE_BLACK) {
             return false;
         }
+
         if (event.getAction() == MotionEvent.ACTION_UP) {
             int x = (int) event.getX();
             int y = (int) event.getY();
@@ -449,17 +475,24 @@ public class WuziqiPanel extends View {
                 return false;
             }
 
-            if (mIsWhite) {
-                if (listener != null) {
-                    listener.onPlacePiece(TYPE_WHITE, p);
-                }
-                mWhitePieceArray.add(p);
+            if (!p.equals(mPieceHolder)) {
+                mPieceHolder = p;
+                invalidate();
+                return true;
             } else {
-                mBlackPieceArray.add(p);
-                if (listener != null) {
-                    listener.onPlacePiece(TYPE_BLACK, p);
+                if (mIsWhite) {
+                    if (listener != null) {
+                        listener.onPlacePiece(TYPE_WHITE, p);
+                    }
+                    mWhitePieceArray.add(p);
+                } else {
+                    mBlackPieceArray.add(p);
+                    if (listener != null) {
+                        listener.onPlacePiece(TYPE_BLACK, p);
+                    }
                 }
             }
+
             invalidate();
             mIsWhite = !mIsWhite;
             return true;

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.stephentuso.welcome.BasicPage;
@@ -133,6 +134,7 @@ public class FirstActivity extends WelcomeActivity implements IRongCallback.ISen
 
     @Override
     public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+        Log.e(TAG, "send bind message error : " + errorCode);
         Toast.makeText(this, R.string.bind_message_error, Toast.LENGTH_LONG).show();
     }
 
