@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
@@ -17,12 +18,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
 import xyz.imxqd.ta.R;
+import xyz.imxqd.ta.media.AudioPlayer;
 
 /**
  * Created by imxqd on 17-4-3.
@@ -68,6 +71,8 @@ public class WuziqiPanel extends View {
     private Point mPieceHolder;
 
     private Bitmap mHolderBitmap;
+
+    private MediaPlayer mPlayer;
 
     //游戏是否结束
     private boolean mIsGameOver;
@@ -144,6 +149,7 @@ public class WuziqiPanel extends View {
         Canvas canvas = new Canvas(mHolderBitmap);
         drawable.setBounds(0, 0, w, h);
         drawable.draw(canvas);
+        mPlayer = MediaPlayer.create(getContext(), R.raw.hit);
 
         mPaint.setColor(mPanelLineColor);
         mPaint.setAntiAlias(true);//抗锯齿
@@ -423,10 +429,12 @@ public class WuziqiPanel extends View {
             return false;
         }
         if (mIsWhite && type == TYPE_WHITE) {
+            mPlayer.start();
             mWhitePieceArray.add(p);
             invalidate();
             return true;
         } else if (!mIsWhite && type == TYPE_BLACK) {
+            mPlayer.start();
             mBlackPieceArray.add(p);
             invalidate();
             return true;
@@ -491,6 +499,7 @@ public class WuziqiPanel extends View {
                         listener.onPlacePiece(TYPE_BLACK, p);
                     }
                 }
+                mPlayer.start();
             }
 
             invalidate();

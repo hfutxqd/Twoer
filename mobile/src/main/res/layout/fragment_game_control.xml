@@ -1,20 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:padding="16dp"
     tools:context="xyz.imxqd.ta.ui.fragments.GameControlFragment">
-    <Button
-        android:id="@+id/game_btn_undo"
-        android:text="@string/game_control_undo"
-        android:layout_width="wrap_content"
+    <TextView
+        android:text="当前执棋:我(黑棋)"
+        android:textColor="@color/black_full"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/game_btn_restart"
-        android:text="@string/game_control_restart"
-        android:layout_width="wrap_content"
+
+    <TextView
+        android:text="读秒:00:30"
+        android:textColor="@color/black_full"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/game_btn_undo"
+            android:text="@string/game_control_undo"
+            android:src="@drawable/ic_undo_white_36dp"
+            android:scaleType="fitCenter"
+            android:layout_margin="16dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/game_btn_restart"
+            android:text="@string/game_control_restart"
+            android:src="@drawable/ic_restart_white_36dp"
+            android:scaleType="fitCenter"
+            android:layout_margin="16dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp" />
+    </LinearLayout>
 </LinearLayout>
