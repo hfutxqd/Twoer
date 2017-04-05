@@ -12,6 +12,8 @@ import xyz.imxqd.ta.R;
 public class BindFragment extends BaseFragment {
 
     private static final String ARG_BITMAP = "bitmap";
+
+    private String text = null;
     private ImageView imIcon;
     private TextView tvText;
 
@@ -49,8 +51,19 @@ public class BindFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (text != null) {
+            setText(text);
+        }
+    }
+
     public void setText(String text) {
-        tvText.setText(text);
+        this.text = text;
+        if (isAdded()) {
+            tvText.setText(text);
+        }
     }
 
 

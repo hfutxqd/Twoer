@@ -22,6 +22,13 @@
         <item name="android:text">@string/bind_fragment_scan</item>
     </style>
 
+    <style name="CustomWel_TextContainer">
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 
     <style name="SelectableItemForeground">
         <item name="android:foreground">@drawable/selectable_item_background</item>

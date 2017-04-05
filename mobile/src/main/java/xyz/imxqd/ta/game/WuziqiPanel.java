@@ -32,13 +32,16 @@ public class WuziqiPanel extends View {
 
     public static final int TYPE_BLACK = 0;
     public static final int TYPE_WHITE = 1;
+    public static final int TYPE_UNDEFINED = -1;
+
     @IntDef({
             TYPE_BLACK, TYPE_WHITE
     })
     @Retention(RetentionPolicy.SOURCE)
-    @interface Type {}
+    @interface Type {
+    }
 
-    private int mPanelWidth ;       //棋盘宽度
+    private int mPanelWidth;       //棋盘宽度
     private float mLineHeight;      //棋盘单行间距
     private int MAX_LINE;//棋盘行列数
 
@@ -51,6 +54,8 @@ public class WuziqiPanel extends View {
     //棋子占行距的比例
     private final float RATIO_PIECE_OF_LINE_HEIGHT = 3 * 1.0f / 4;
 
+
+    private int mDisableType = TYPE_UNDEFINED;
     //是否将要下白棋
     private boolean mIsWhite = false;
     //已下的白棋的列表
@@ -78,11 +83,11 @@ public class WuziqiPanel extends View {
     }
 
     public WuziqiPanel(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public WuziqiPanel(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
 
     }
 
@@ -91,7 +96,7 @@ public class WuziqiPanel extends View {
         //获取xml中自定义的属性值并对相应的属性赋值
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WuziqiPanel);
         int n = a.getIndexCount();
-        for (int i = 0;i < n; i++) {
+        for (int i = 0; i < n; i++) {
             int attrName = a.getIndex(i);
             switch (attrName) {
                 //棋盘背景
@@ -192,13 +197,13 @@ public class WuziqiPanel extends View {
         Log.d(TAG, "checkGameOver: ");
         boolean whiteWin = checkFiveInLine(mWhitePieceArray);
         boolean blackWin = checkFiveInLine(mBlackPieceArray);
-        boolean noWin = checkNoWin(whiteWin,blackWin);
+        boolean noWin = checkNoWin(whiteWin, blackWin);
         //如果游戏结束,获取游戏结果mGameWinResult
         if (whiteWin) {
             mGameWinResult = WHITE_WIN;
         } else if (blackWin) {
             mGameWinResult = BLACK_WIN;
-        } else if(noWin){
+        } else if (noWin) {
             mGameWinResult = NO_WIN;
         }
         if (whiteWin || blackWin || noWin) {
@@ -216,10 +221,10 @@ public class WuziqiPanel extends View {
             int x = point.x;
             int y = point.y;
 
-            boolean checkHorizontal = checkHorizontalFiveInLine(x,y,points);
-            boolean checkVertical = checkVerticalFiveInLine(x,y,points);
-            boolean checkLeftDiagonal = checkLeftDiagonalFiveInLine(x,y,points);
-            boolean checkRightDiagonal = checkRightDiagonalFiveInLine(x,y,points);
+            boolean checkHorizontal = checkHorizontalFiveInLine(x, y, points);
+            boolean checkVertical = checkVerticalFiveInLine(x, y, points);
+            boolean checkLeftDiagonal = checkLeftDiagonalFiveInLine(x, y, points);
+            boolean checkRightDiagonal = checkRightDiagonalFiveInLine(x, y, points);
             if (checkHorizontal || checkVertical || checkLeftDiagonal || checkRightDiagonal) {
                 return true;
             }
@@ -231,7 +236,7 @@ public class WuziqiPanel extends View {
     //检查向右斜的线上有没有相同棋子的五子连珠
     private boolean checkRightDiagonalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x - i, y - i))) {
                 count++;
             } else {
@@ -241,7 +246,7 @@ public class WuziqiPanel extends View {
         if (count == MAX_COUNT_IN_LINE) {
             return true;
         }
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x + i, y + i))) {
                 count++;
             } else {
@@ -258,7 +263,7 @@ public class WuziqiPanel extends View {
     //检查向左斜的线上有没有相同棋子的五子连珠
     private boolean checkLeftDiagonalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x - i, y + i))) {
                 count++;
             } else {
@@ -268,7 +273,7 @@ public class WuziqiPanel extends View {
         if (count == MAX_COUNT_IN_LINE) {
             return true;
         }
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x + i, y - i))) {
                 count++;
             } else {
@@ -285,7 +290,7 @@ public class WuziqiPanel extends View {
     //检查竖线上有没有相同棋子的五子连珠
     private boolean checkVerticalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x, y + i))) {
                 count++;
             } else {
@@ -295,7 +300,7 @@ public class WuziqiPanel extends View {
         if (count == MAX_COUNT_IN_LINE) {
             return true;
         }
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x, y - i))) {
                 count++;
             } else {
@@ -312,7 +317,7 @@ public class WuziqiPanel extends View {
     //检查横线上有没有相同棋子的五子连珠
     private boolean checkHorizontalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x - i, y))) {
                 count++;
             } else {
@@ -322,7 +327,7 @@ public class WuziqiPanel extends View {
         if (count == MAX_COUNT_IN_LINE) {
             return true;
         }
-        for (int i = 1;i < MAX_COUNT_IN_LINE;i++) {
+        for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x + i, y))) {
                 count++;
             } else {
@@ -351,17 +356,17 @@ public class WuziqiPanel extends View {
 
     //绘制棋子
     private void drawPiece(Canvas canvas) {
-        for (int i = 0,n = mWhitePieceArray.size();i < n;i++) {
+        for (int i = 0, n = mWhitePieceArray.size(); i < n; i++) {
             Point whitePoint = mWhitePieceArray.get(i);
             canvas.drawBitmap(mWhitePiece,
-                    (whitePoint.x + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,
-                    (whitePoint.y + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,null);
+                    (whitePoint.x + (1 - RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,
+                    (whitePoint.y + (1 - RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight, null);
         }
-        for (int i = 0,n = mBlackPieceArray.size();i < n;i++) {
+        for (int i = 0, n = mBlackPieceArray.size(); i < n; i++) {
             Point blackPoint = mBlackPieceArray.get(i);
             canvas.drawBitmap(mBlackPiece,
-                    (blackPoint.x + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,
-                    (blackPoint.y + (1 -RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,null);
+                    (blackPoint.x + (1 - RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight,
+                    (blackPoint.y + (1 - RATIO_PIECE_OF_LINE_HEIGHT) / 2) * mLineHeight, null);
         }
     }
 
@@ -370,7 +375,7 @@ public class WuziqiPanel extends View {
         int w = mPanelWidth;
         float lineHeight = mLineHeight;
 
-        for (int i = 0;i < MAX_LINE; i ++) {
+        for (int i = 0; i < MAX_LINE; i++) {
             int startX = (int) (lineHeight / 2);
             int endX = (int) (w - lineHeight / 2);
 
@@ -381,9 +386,59 @@ public class WuziqiPanel extends View {
 
     }
 
+
+    /**
+     * 落子
+     * @param type 棋子类型
+     * @param p 落点
+     * @return 落子是否成功
+     */
+    public boolean addPiece(int type, Point p) {
+        if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {
+            return false;
+        }
+        if (mIsWhite && type == TYPE_WHITE) {
+            mWhitePieceArray.add(p);
+            invalidate();
+            return true;
+        } else if (!mIsWhite && type == TYPE_BLACK) {
+            mBlackPieceArray.add(p);
+            invalidate();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 设置某种棋子不能通过屏幕点击的方式添加
+     * @param type 棋子类型
+     */
+    public void setTouchDisable(int type) {
+        mDisableType = type;
+    }
+
+    /**
+     * 撤回上一次落子
+     */
+    public void undo() {
+        if (mIsWhite && mBlackPieceArray.size() > 0) {
+            mBlackPieceArray.remove(mBlackPieceArray.size() - 1);
+        } else if (!mIsWhite && mWhitePieceArray.size() > 0) {
+            mWhitePieceArray.remove(mBlackPieceArray.size() - 1);
+        }
+        mIsWhite = !mIsWhite;
+        invalidate();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (mIsGameOver) {
+            return false;
+        }
+        if (mIsWhite && mDisableType == TYPE_WHITE) {
+            return false;
+        } else if (!mIsWhite && mDisableType == TYPE_BLACK) {
             return false;
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -414,7 +469,7 @@ public class WuziqiPanel extends View {
 
     //根据触摸点获取最近的格子位置
     private Point getValidPoint(int x, int y) {
-        return new Point((int)(x / mLineHeight),(int)(y / mLineHeight));
+        return new Point((int) (x / mLineHeight), (int) (y / mLineHeight));
     }
 
 
@@ -430,7 +485,7 @@ public class WuziqiPanel extends View {
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(INSTANCE,super.onSaveInstanceState());
+        bundle.putParcelable(INSTANCE, super.onSaveInstanceState());
         bundle.putBoolean(INSTANCE_GAME_OVER, mIsGameOver);
         bundle.putParcelableArrayList(INSTANCE_WHITE_ARRAY, mWhitePieceArray);
         bundle.putParcelableArrayList(INSTANCE_BLACK_ARRAY, mBlackPieceArray);

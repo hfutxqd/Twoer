@@ -2,6 +2,7 @@ package xyz.imxqd.ta.ui.fragments;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
@@ -13,6 +14,9 @@ import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.utils.Shocker;
 
 public class ShockRecordFragment extends BaseFragment implements View.OnTouchListener {
+
+    private static final String TAG = "ShockRecordFragment";
+
     private static final int DISTANCE_Y_SEND_OR_CANCEL = 80;
 
     private View mBgView;
@@ -116,6 +120,12 @@ public class ShockRecordFragment extends BaseFragment implements View.OnTouchLis
             } else {
                 mText.setText(R.string.shock_release_to_pause);
             }
+        } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+            mBgView.setBackgroundResource(R.drawable.circular_outline_grey_200);
+            Shocker.cancal();
+            stopAnim();
+            isRecording = false;
+            mCallback.onShockRecordingCancel();
         }
         return false;
     }

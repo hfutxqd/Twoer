@@ -12,6 +12,7 @@ import android.widget.TextView;
 import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.media.AudioRecorder;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
+import xyz.imxqd.ta.utils.Shocker;
 
 
 /**
@@ -120,6 +121,12 @@ public class SoundRecordFragment extends BaseFragment implements View.OnTouchLis
             } else {
                 mText.setText(R.string.voice_release_to_send);
             }
+        } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+            mBgView.setBackgroundResource(R.drawable.circular_outline_grey_200);
+            AudioRecorder.getInstance().cancel();
+            stopAnim();
+            isRecording = false;
+            mCallback.onSoundRecordingCancel();
         }
         return false;
     }

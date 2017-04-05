@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:wzq="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="xyz.imxqd.ta.ui.activities.GameActivity">
     <xyz.imxqd.ta.game.WuziqiPanel
         android:id="@+id/id_wuziqi"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:panel_background="@null"
+        app:panel_line_color="#C00"
+        app:white_piece_img="@drawable/stone_w2"
+        app:black_piece_img="@drawable/stone_b1"
+        app:max_count_line="11"
+        app:max_win_count_piece="5"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/game_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        wzq:panel_background="@drawable/panel_bg"
-        wzq:panel_line_color="#C00"
-        wzq:white_piece_img="@drawable/stone_w2"
-        wzq:black_piece_img="@drawable/stone_b1"
-        wzq:max_count_line="11"
-        wzq:max_win_count_piece="5"/>
+        android:layout_margin="8dp"
+        app:piv_viewPager="@id/game_view_pager"
+        app:piv_animationType="worm"
+        app:piv_radius="3dp"
+        app:piv_orientation="horizontal"
+        app:piv_unselectedColor="@color/black_6p"
+        app:piv_selectedColor="@color/colorAccent"/>
 </LinearLayout>

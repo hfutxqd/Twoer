@@ -127,6 +127,8 @@ public class FirstActivity extends WelcomeActivity implements IRongCallback.ISen
     public void onSuccess(Message message) {
         Toast.makeText(this, R.string.bind_message_success, Toast.LENGTH_LONG).show();
         fragment.setText(getString(R.string.fisrt_bind_code, mBindMessage.getRandomCode()));
+
+        viewPager.setCurrentItem(2);
     }
 
     @Override

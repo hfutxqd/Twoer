@@ -24,6 +24,8 @@
     <string name="qr_code_could_not_read_qr_code_from_scanner">对不起，无法打开扫出的内容</string>
     <string name="qr_code_camera_not_found">未检测到相机</string>
     <string name="qrcode_menu_photo">照片</string>
+
+
     <string name="fisrt_title_1">给最亲密的TA</string>
     <string name="fisrt_title_2">绑定帐号</string>
     <string name="fisrt_des_2">向左滑动，扫描二维码绑定帐号</string>
@@ -39,5 +41,15 @@
     <string name="shock_btn_send">发送</string>
     <string name="title_activity_game">五子棋</string>
 
+    <string name="title_game_again">再来一局</string>
+    <string name="title_game_exit">退出游戏</string>
+    <string name="title_game_over">此局结束</string>
+    <string name="message_game_white_win">白棋胜利!</string>
+    <string name="message_game_black_win">黑棋胜利!</string>
+    <string name="message_game_no_win">和棋!</string>
+    <string name="game_control_undo">悔棋</string>
+    <string name="game_control_restart">重来</string>
+    <string name="bind_fragment_title">扫描二维码</string>
+    <string name="bind_fragment_text_default">扫描此二维码即可与你绑定</string>
 
 </resources>

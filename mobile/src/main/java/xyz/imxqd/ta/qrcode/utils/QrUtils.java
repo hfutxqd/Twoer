@@ -61,6 +61,24 @@ public class QrUtils {
     }
 
 
+    private static BitMatrix updateBit(BitMatrix matrix, int margin){
+        int tempM = margin*2;
+        int[] rec = matrix.getEnclosingRectangle();   //获取二维码图案的属性
+        int resWidth = rec[2] + tempM;
+        int resHeight = rec[3] + tempM;
+        BitMatrix resMatrix = new BitMatrix(resWidth, resHeight); // 按照自定义边框生成新的BitMatrix
+        resMatrix.clear();
+        for(int i= margin; i < resWidth- margin; i++){   //循环，将二维码图案绘制到新的bitMatrix中
+            for(int j=margin; j < resHeight-margin; j++){
+                if(matrix.get(i-margin + rec[0], j-margin + rec[1])){
+                    resMatrix.set(i,j);
+                }
+            }
+        }
+        return resMatrix;
+    }
+
+
     public static Bitmap generateQRCode(String qrCodeString){
         Bitmap bmp = null;    //二维码图片
 
