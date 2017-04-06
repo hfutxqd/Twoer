@@ -34,9 +34,9 @@ import xyz.imxqd.ta.media.AudioPlayer;
 public class WuziqiPanel extends View {
     private static final String TAG = "WuziqiPanel";
 
-    public static final int TYPE_BLACK = 0;
-    public static final int TYPE_WHITE = 1;
-    public static final int TYPE_UNDEFINED = -1;
+    public static final int TYPE_BLACK = 0x0001;
+    public static final int TYPE_WHITE = 0x0010;
+    private static final int TYPE_UNDEFINED = 0x0100;
 
     @IntDef({
             TYPE_BLACK, TYPE_WHITE
@@ -467,6 +467,9 @@ public class WuziqiPanel extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (mIsGameOver) {
+            return false;
+        }
+        if (mDisableType == (TYPE_BLACK | TYPE_WHITE)) {
             return false;
         }
         if (mIsWhite && mDisableType == TYPE_WHITE) {
