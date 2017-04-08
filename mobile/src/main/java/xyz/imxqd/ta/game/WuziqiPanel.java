@@ -164,6 +164,13 @@ public class WuziqiPanel extends View {
         }
     }
 
+    public List<Point> getWhitePieces() {
+        return mWhitePieceArray;
+    }
+
+    public List<Point> getBlackPieces() {
+        return mBlackPieceArray;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -446,23 +453,43 @@ public class WuziqiPanel extends View {
      * @param p 落点
      * @return 落子是否成功
      */
-    public boolean addPiece(int type, Point p) {
+    public boolean addPiece(@Type int type, Point p) {
+        Log.d(TAG, "addPiece#type: " + type);
+        Log.d(TAG, "addPiece#isWhite: " + mIsWhite);
         if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {
             return false;
         }
         if (mIsWhite && type == TYPE_WHITE) {
+            Log.d(TAG, "addWhitePiece: " + p);
             mPlayer.start();
             mWhitePieceArray.add(p);
+            mIsWhite = false;
+            mPieceHolder = p;
             invalidate();
             return true;
         } else if (!mIsWhite && type == TYPE_BLACK) {
+            Log.d(TAG, "addBlackPiece: " + p);
             mPlayer.start();
             mBlackPieceArray.add(p);
+            mIsWhite = true;
+            mPieceHolder = p;
             invalidate();
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * 手动指定当前落子者
+     * @param type
+     */
+    public void setCurrentPlaer(@Type int type) {
+        if (type == TYPE_BLACK) {
+            mIsWhite = false;
+        } else {
+            mIsWhite = true;
+        }
     }
 
     /**
@@ -514,21 +541,20 @@ public class WuziqiPanel extends View {
                 return true;
             } else {
                 if (mIsWhite) {
+                    addPiece(TYPE_WHITE, p);
                     if (listener != null) {
                         listener.onPlacePiece(TYPE_WHITE, p);
                     }
-                    mWhitePieceArray.add(p);
+
                 } else {
-                    mBlackPieceArray.add(p);
+                    addPiece(TYPE_BLACK, p);
                     if (listener != null) {
                         listener.onPlacePiece(TYPE_BLACK, p);
                     }
                 }
-                mPlayer.start();
             }
-
             invalidate();
-            mIsWhite = !mIsWhite;
+
             return true;
         }
         return true;

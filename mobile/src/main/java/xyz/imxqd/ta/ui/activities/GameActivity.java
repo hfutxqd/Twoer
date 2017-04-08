@@ -14,6 +14,8 @@ import android.view.Window;
 
 import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.game.OnGameStatusChangeListener;
+import xyz.imxqd.ta.game.RobotAI;
+import xyz.imxqd.ta.game.RobotAI2;
 import xyz.imxqd.ta.game.WuziqiPanel;
 import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
@@ -30,6 +32,8 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
     private AlertDialog.Builder alertBuilder;
     private AlertDialog alertDialog;
     private ViewPager mViewPager;
+    private RobotAI mRobot = new RobotAI(15, 15);
+    private RobotAI2 mRobot2 = new RobotAI2();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +66,14 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
         mGamePanel.setOnGameStatusChangeListener(new OnGameStatusChangeListener() {
             @Override
             public void onPlacePiece(int type, Point point) {
-                Log.d(TAG, "onPlacePiece: " + type);
-                Log.d(TAG, "onPlacePiece: " + point.toString());
+                if (type == WuziqiPanel.TYPE_BLACK) {
+                    Point p = mRobot.nextPoint(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
+                    mGamePanel.addPiece(WuziqiPanel.TYPE_WHITE, p);
+                } else {
+                    Point p = mRobot.nextPoint(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
+                    mGamePanel.addPiece(WuziqiPanel.TYPE_BLACK, p);
+                }
+                mRobot2.nextPoint(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
             }
 
             @Override

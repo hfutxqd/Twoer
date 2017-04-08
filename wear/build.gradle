@@ -20,6 +20,7 @@ android {
 
 dependencies {
     compile 'com.google.android.support:wearable:2.0.1'
+    provided 'com.google.android.wearable:wearable:2.0.1'
     compile 'com.ticwear:mobvoi-api-gms-china:1.0.3'
     compile files('libs/Rong_IMLib.jar')
 }
