@@ -124,6 +124,7 @@ public class ShockRecordFragment extends BaseFragment implements View.OnTouchLis
             mBgView.setBackgroundResource(R.drawable.circular_outline_grey_200);
             Shocker.cancal();
             stopAnim();
+            mText.setText(R.string.shock_press_to_record);
             isRecording = false;
             mCallback.onShockRecordingCancel();
         }

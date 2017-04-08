@@ -125,6 +125,7 @@ public class SoundRecordFragment extends BaseFragment implements View.OnTouchLis
             mBgView.setBackgroundResource(R.drawable.circular_outline_grey_200);
             AudioRecorder.getInstance().cancel();
             stopAnim();
+            mText.setText(R.string.voice_press_to_record);
             isRecording = false;
             mCallback.onSoundRecordingCancel();
         }
