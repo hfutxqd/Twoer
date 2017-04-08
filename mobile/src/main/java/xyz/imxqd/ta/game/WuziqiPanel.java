@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -112,8 +113,8 @@ public class WuziqiPanel extends View {
             switch (attrName) {
                 //棋盘背景
                 case R.styleable.WuziqiPanel_panel_background:
-                    BitmapDrawable panelBackgroundBitmap = (BitmapDrawable) a.getDrawable(attrName);
-                    setBackground(panelBackgroundBitmap);
+                    Drawable panelBackground = a.getDrawable(attrName);
+                    setBackground(panelBackground);
                     break;
                 //棋盘线的颜色
                 case R.styleable.WuziqiPanel_panel_line_color:
@@ -415,6 +416,27 @@ public class WuziqiPanel extends View {
             canvas.drawLine(y, startX, y, endX, mPaint);//画竖线
         }
 
+    }
+
+    /**
+     * 指定棋盘上的棋子
+     * @param whites 白色棋子
+     * @param blacks 黑色棋子
+     */
+    public void initPanel(@NonNull ArrayList<Point> whites,@NonNull ArrayList<Point> blacks) {
+        mWhitePieceArray = whites;
+        mBlackPieceArray = blacks;
+        checkGameOver();
+        if (blacks.size() > whites.size()) {
+            // 上一次是黑子落子
+            mIsWhite = true;
+            mPieceHolder = blacks.get(blacks.size() - 1);
+        } else {
+            // 上一次是白子落子
+            mIsWhite = false;
+            mPieceHolder = whites.get(whites.size() - 1);
+        }
+        invalidate();
     }
 
 
