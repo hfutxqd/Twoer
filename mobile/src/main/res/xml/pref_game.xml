@@ -1,0 +1,12 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="@string/pref_ai_level_default_values"
+        android:entries="@array/pref_ai_level"
+        android:entryValues="@array/pref_ai_level_values"
+        android:key="ai_level"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_ai_level" />
+
+</PreferenceScreen>

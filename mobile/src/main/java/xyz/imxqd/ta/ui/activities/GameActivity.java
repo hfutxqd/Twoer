@@ -1,39 +1,63 @@
 package xyz.imxqd.ta.ui.activities;
 
-import android.content.DialogInterface;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
 import xyz.imxqd.ta.R;
+import xyz.imxqd.ta.game.AI;
+import xyz.imxqd.ta.game.FiveChessPanel;
 import xyz.imxqd.ta.game.OnGameStatusChangeListener;
 import xyz.imxqd.ta.game.RobotAI;
 import xyz.imxqd.ta.game.RobotAI2;
-import xyz.imxqd.ta.game.WuziqiPanel;
 import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
 import xyz.imxqd.ta.ui.fragments.GameControlFragment;
 import xyz.imxqd.ta.ui.fragments.ShockRecordFragment;
 import xyz.imxqd.ta.ui.fragments.SoundRecordFragment;
+import xyz.imxqd.ta.utils.UserSettings;
+
+import static xyz.imxqd.ta.game.FiveChessPanel.TYPE_BLACK;
+import static xyz.imxqd.ta.game.FiveChessPanel.TYPE_WHITE;
 
 public class GameActivity extends AppCompatActivity implements SoundRecordFragment.RecordCallback,
         ShockRecordFragment.RecordCallback{
 
     private static final String TAG = "GameActivity";
 
-    private WuziqiPanel mGamePanel;
-    private AlertDialog.Builder alertBuilder;
-    private AlertDialog alertDialog;
+    private FiveChessPanel mGamePanel;
     private ViewPager mViewPager;
-    private RobotAI mRobot = new RobotAI(15, 15);
-    private RobotAI2 mRobot2 = new RobotAI2();
+    private AI mAi;
+
+    private Handler mHander = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case TYPE_BLACK: {
+                    Point p = new Point(msg.arg1, msg.arg2);
+                    mGamePanel.addPiece(TYPE_BLACK, p);
+                }
+                    break;
+                case TYPE_WHITE: {
+                    Point p = new Point(msg.arg1, msg.arg2);
+                    mGamePanel.addPiece(TYPE_WHITE, p);
+                }
+                    break;
+            }
+            return true;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,52 +69,40 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        //游戏结束时弹出对话框
-        alertBuilder = new AlertDialog.Builder(GameActivity.this);
-        alertBuilder.setPositiveButton(R.string.title_game_again, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mGamePanel.restartGame();
-            }
-        });
-        alertBuilder.setNegativeButton(R.string.title_game_exit, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                GameActivity.this.finish();
-            }
-        });
-        alertBuilder.setCancelable(false);
-        alertBuilder.setTitle(R.string.title_game_over);
+        int timeout = UserSettings.getAILevel(this);
+        if (timeout == 0) {
+            mAi = new RobotAI(15);
+        } else {
+            mAi = new RobotAI2(15, timeout);
+        }
+        Log.d(TAG, "onCreate: " + timeout);
+        mAi.reset();
 
-        mGamePanel = (WuziqiPanel) findViewById(R.id.id_wuziqi);
+        mGamePanel = (FiveChessPanel) findViewById(R.id.id_wuziqi);
+        mGamePanel.setTouchDisable(TYPE_WHITE);
         mGamePanel.setOnGameStatusChangeListener(new OnGameStatusChangeListener() {
             @Override
-            public void onPlacePiece(int type, Point point) {
-                if (type == WuziqiPanel.TYPE_BLACK) {
-                    Point p = mRobot.nextPoint(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
-                    mGamePanel.addPiece(WuziqiPanel.TYPE_WHITE, p);
-                } else {
-                    Point p = mRobot.nextPoint(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
-                    mGamePanel.addPiece(WuziqiPanel.TYPE_BLACK, p);
-                }
-                mRobot2.nextPoint(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
+            public void onPlacePiece(final int type, Point point) {
+                mAi.initBoard(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Point p = mAi.nextBest();
+                        Log.d(TAG, "run: " + p);
+                        if (type == FiveChessPanel.TYPE_BLACK) {
+                            mHander.sendMessage(mHander.obtainMessage(TYPE_WHITE, p.x, p.y));
+                        } else {
+                            mHander.sendMessage(mHander.obtainMessage(FiveChessPanel.TYPE_BLACK, p.x, p.y));
+                        }
+                    }
+                }).start();
+
+
             }
 
             @Override
             public void onGameOver(int gameWinResult) {
-                switch (gameWinResult) {
-                    case WuziqiPanel.WHITE_WIN:
-                        alertBuilder.setMessage(R.string.message_game_white_win);
-                        break;
-                    case WuziqiPanel.BLACK_WIN:
-                        alertBuilder.setMessage(R.string.message_game_black_win);
-                        break;
-                    case WuziqiPanel.NO_WIN:
-                        alertBuilder.setMessage(R.string.message_game_no_win);
-                        break;
-                }
-                alertDialog = alertBuilder.create();
-                alertDialog.show();
+
             }
         });
 
@@ -118,9 +130,17 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.game_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        } else if (item.getItemId() == R.id.action_settings){
+            startActivity(new Intent(this, GameSettingsActivity.class));
         }
         return true;
     }

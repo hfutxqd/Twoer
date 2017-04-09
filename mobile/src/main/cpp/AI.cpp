@@ -7,6 +7,13 @@
 #include<cstdlib>
 #include<iostream>
 
+#include <android/log.h>
+#include <sstream>
+
+#define  LOG_TAG    "GameAi"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
 using namespace std;
 
 int AI::GetTime() {
@@ -46,6 +53,7 @@ void AI::RecordHash(int depth, int val, int hashf) {
 // 界面落子
 void AI::TurnMove(Pos next) {
     next.x += 4, next.y += 4;
+    LOGI("TurnMove %d, %d", next.x, next.y);
     MakeMove(next);
 }
 
@@ -53,10 +61,12 @@ void AI::TurnMove(Pos next) {
 Pos AI::TurnBest() {
     Pos best = gobang();
     best.x -= 4, best.y -= 4;
+    stringstream ss;
     // 输出思考信息
-    cout << "MESSAGE" << " depth=" << MaxDepth << " NPS=" << total / (ThinkTime + 1) << "k" << endl;
-    cout << "MESSAGE" << " best: [" << best.x << "," << best.y << "]" << " val=" << bestPoint.val
+    ss << "MESSAGE" << " depth=" << MaxDepth << " NPS=" << total / (ThinkTime + 1) << "k" << endl;
+    ss << "MESSAGE" << " best: [" << best.x << "," << best.y << "]" << " val=" << bestPoint.val
          << endl;
+    LOGI("%s", ss.str().data());
 
     return best;
 }

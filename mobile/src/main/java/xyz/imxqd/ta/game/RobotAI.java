@@ -19,13 +19,15 @@ public class RobotAI implements AI{
     private static final int L_FOUR = 90; // 活四
     private static final int D_FOUR = 100; // 死四
 
-    private int mWidth = 0;
-    private int mHeight = 0;
+    private int mSize = 0;
+    private boolean mIsWhite = false;
 
     // Black chess priority value array
     int[][][] black = null;
     // white chess priority value array
     int[][][] white = null;
+
+    int[][] map = null;
 
     // the value of position which has different performance
     // 五子棋中的各个点的权值
@@ -34,29 +36,49 @@ public class RobotAI implements AI{
     int[][] cpuValue = { { 0, 3, 166, 186, 229, 229, 229 },
             { 0, 0, 5, 167, 220, 220, 220 }, { 0, 0, 0, 0, 220, 220, 220, 0 } };
 
-    public RobotAI(int width, int height) {
-        mWidth = width;
-        mHeight = height;
-        black = new int[width][height][5];
-        white = new int[width][height][5];
-        // for(int i = 0 ; i < width ; i++){
-        // for(int j = 0; j < height; j++){
-        // black[i][j] = new Chess();
-        // white[i][j] = new Chess();
-        // }
-        // }
+    public RobotAI(int size) {
+        mSize = size;
+        black = new int[mSize][mSize][5];
+        white = new int[mSize][mSize][5];
+        map = new int[mSize][mSize];
     }
 
-
     @Override
-    public Point nextPoint(List<Point> whites, List<Point> blacks) {
-        int[][] map = new int[mWidth][mHeight];
+    public void initBoard(List<Point> whites, List<Point> blacks) {
+        map = new int[mSize][mSize];
         for (Point p : whites) {
-            map[p.x][p.y] = WuziqiPanel.TYPE_WHITE;
+            map[p.x][p.y] = FiveChessPanel.TYPE_WHITE;
         }
         for (Point p : blacks) {
-            map[p.x][p.y] = WuziqiPanel.TYPE_BLACK;
+            map[p.x][p.y] = FiveChessPanel.TYPE_BLACK;
         }
+        if (whites.size() == blacks.size()) {
+            mIsWhite = false;
+        } else {
+            mIsWhite = true;
+        }
+    }
+
+    @Override
+    public void addPoint(Point p) {
+        if (mIsWhite) {
+            map[p.x][p.y] = FiveChessPanel.TYPE_WHITE;
+        } else {
+            map[p.x][p.y] = FiveChessPanel.TYPE_BLACK;
+        }
+        mIsWhite = !mIsWhite;
+    }
+
+    @Override
+    public void reset() {
+        black = new int[mSize][mSize][5];
+        white = new int[mSize][mSize][5];
+        map = new int[mSize][mSize];
+        mIsWhite = false;
+    }
+
+    @Override
+    public Point nextBest() {
         updateValue(map);
         return getPosition(map);
     }
@@ -68,38 +90,38 @@ public class RobotAI implements AI{
     private void updateValue(int[][] map) {
         int[] computerValue = { 0, 0, 0, 0 };
         int[] playerValue = { 0, 0, 0, 0 };
-        for (int i = 0; i < mWidth; i++) {
-            for (int j = 0; j < mHeight; j++) {
+        for (int i = 0; i < mSize; i++) {
+            for (int j = 0; j < mSize; j++) {
                 if (map[i][j] == 0) {
                     int counter = 0;
                     // 对不同的情况给与不同的权值
                     // 纵向
-                    for (int k = j + 1; k < mHeight; k++) {
+                    for (int k = j + 1; k < mSize; k++) {
 
-                        if (map[i][k] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[i][k] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[0]++;
                         }
                         if (map[i][k] == 0) {
                             break;
                         }
-                        if (map[i][k] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[i][k] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
-                        if (k == mHeight - 1) {
+                        if (k == mSize - 1) {
                             counter++;
                         }
                     }
 
                     for (int k = j - 1; k >= 0; k--) {
 
-                        if (map[i][k] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[i][k] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[0]++;
                         }
                         if (map[i][k] == 0) {
                             break;
                         }
-                        if (map[i][k] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[i][k] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
@@ -107,7 +129,7 @@ public class RobotAI implements AI{
                             counter++;
                         }
                     }
-                    if (j == 0 || j == mHeight - 1) {
+                    if (j == 0 || j == mSize - 1) {
                         counter++;
                     }
                     white[i][j][0] = cpuValue[counter][computerValue[0]];
@@ -115,21 +137,21 @@ public class RobotAI implements AI{
                     counter = 0;
 
                     // 反斜线
-                    for (int k = i + 1, l = j + 1; l < mHeight; k++, l++) {
-                        if (k >= mHeight) {
+                    for (int k = i + 1, l = j + 1; l < mSize; k++, l++) {
+                        if (k >= mSize) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[1]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
-                        if (k == mWidth - 1 || l == mHeight - 1) {
+                        if (k == mSize - 1 || l == mSize - 1) {
                             counter++;
                         }
 
@@ -140,13 +162,13 @@ public class RobotAI implements AI{
                         if (k < 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[1]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
@@ -155,7 +177,7 @@ public class RobotAI implements AI{
                         }
 
                     }
-                    if (i == 0 || i == mWidth - 1 || j == 0 || j == mHeight - 1) {
+                    if (i == 0 || i == mSize - 1 || j == 0 || j == mSize - 1) {
                         counter++;
                     }
 
@@ -164,32 +186,32 @@ public class RobotAI implements AI{
                     counter = 0;
 
                     // 横向
-                    for (int k = i + 1; k < mWidth; k++) {
+                    for (int k = i + 1; k < mSize; k++) {
 
-                        if (map[k][j] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][j] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[2]++;
                         }
                         if (map[k][j] == 0) {
                             break;
                         }
-                        if (map[k][j] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][j] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
-                        if (k == mWidth - 1) {
+                        if (k == mSize - 1) {
                             counter++;
                         }
                     }
 
                     for (int k = i - 1; k >= 0; k--) {
 
-                        if (map[k][j] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][j] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[2]++;
                         }
                         if (map[k][j] == 0) {
                             break;
                         }
-                        if (map[k][j] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][j] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
@@ -198,7 +220,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i == 0 || i == mWidth - 1) {
+                    if (i == 0 || i == mSize - 1) {
                         counter++;
                     }
                     white[i][j][2] = cpuValue[counter][computerValue[2]];
@@ -206,22 +228,22 @@ public class RobotAI implements AI{
                     counter = 0;
 
                     // 正斜线
-                    for (int k = i - 1, l = j + 1; l < mWidth; k--, l++) {
+                    for (int k = i - 1, l = j + 1; l < mSize; k--, l++) {
 
                         if (k < 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[3]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
-                        if (k == 0 || l == mHeight - 1) {
+                        if (k == 0 || l == mSize - 1) {
                             counter++;
                         }
 
@@ -229,25 +251,25 @@ public class RobotAI implements AI{
 
                     for (int k = i + 1, l = j - 1; l >= 0; k++, l--) {
 
-                        if (k >= mWidth) {
+                        if (k >= mSize) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             computerValue[3]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             counter++;
                             break;
                         }
-                        if (k == mWidth - 1 || l == 0) {
+                        if (k == mSize - 1 || l == 0) {
                             counter++;
                         }
 
                     }
-                    if (i == 0 || i == mWidth - 1 || j == 0 || j == mHeight - 1) {
+                    if (i == 0 || i == mSize - 1 || j == 0 || j == mSize - 1) {
                         counter++;
                     }
                     white[i][j][3] = cpuValue[counter][computerValue[3]];
@@ -346,7 +368,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i > 0 && j < mHeight - 1) {
+                    if (i > 0 && j < mSize - 1) {
                         if (map[i - 1][j + 1] == 0) {
                             if (white[i - 1][j + 1][3] >= 173) {
                                 for (int k = 0; k < 4; k++) {
@@ -369,7 +391,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (j < mHeight - 1) {
+                    if (j < mSize - 1) {
                         if (map[i][j + 1] == 0) {
                             if (white[i][j + 1][0] >= 173) {
                                 for (int k = 0; k < 4; k++) {
@@ -393,7 +415,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i < mWidth - 1 && j < mHeight - 1) {
+                    if (i < mSize - 1 && j < mSize - 1) {
                         if (map[i + 1][j + 1] == 0) {
                             if (white[i + 1][j + 1][1] >= 173) {
                                 for (int k = 0; k < 4; k++) {
@@ -416,7 +438,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i < mWidth - 1) {
+                    if (i < mSize - 1) {
                         if (map[i + 1][j] == 0) {
                             if (white[i + 1][j][2] >= 173) {
                                 for (int k = 0; k < 4; k++) {
@@ -439,7 +461,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i < mWidth - 1 && j > 0) {
+                    if (i < mSize - 1 && j > 0) {
                         if (map[i + 1][j - 1] == 0) {
                             if (white[i + 1][j - 1][3] >= 173) {
                                 for (int k = 0; k < 4; k++) {
@@ -467,36 +489,36 @@ public class RobotAI implements AI{
 
             }
         }
-        for (int i = 0; i < mWidth; i++) {
-            for (int j = 0; j < mHeight; j++) {
+        for (int i = 0; i < mSize; i++) {
+            for (int j = 0; j < mSize; j++) {
                 if (map[i][j] == 0) {
                     int counter = 0;
-                    for (int k = j + 1; k < mHeight; k++) {
+                    for (int k = j + 1; k < mSize; k++) {
 
-                        if (map[i][k] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[i][k] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[0]++;
                         }
                         if (map[i][k] == 0) {
                             break;
                         }
-                        if (map[i][k] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[i][k] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
-                        if (k == mHeight - 1) {
+                        if (k == mSize - 1) {
                             counter++;
                         }
                     }
 
                     for (int k = j - 1; k >= 0; k--) {
 
-                        if (map[i][k] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[i][k] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[0]++;
                         }
                         if (map[i][k] == 0) {
                             break;
                         }
-                        if (map[i][k] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[i][k] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
@@ -504,28 +526,28 @@ public class RobotAI implements AI{
                             counter++;
                         }
                     }
-                    if (j == 0 || j == mHeight - 1) {
+                    if (j == 0 || j == mSize - 1) {
                         counter++;
                     }
                     black[i][j][0] = plaValue[counter][playerValue[0]];
                     playerValue[0] = 0;
                     counter = 0;
 
-                    for (int k = i + 1, l = j + 1; l < mHeight; k++, l++) {
-                        if (k >= mWidth) {
+                    for (int k = i + 1, l = j + 1; l < mSize; k++, l++) {
+                        if (k >= mSize) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[1]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
-                        if (k == mWidth - 1 || l == mHeight - 1) {
+                        if (k == mSize - 1 || l == mSize - 1) {
                             counter++;
                         }
 
@@ -536,13 +558,13 @@ public class RobotAI implements AI{
                         if (k < 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[1]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
@@ -551,39 +573,39 @@ public class RobotAI implements AI{
                         }
 
                     }
-                    if (i == 0 || i == mWidth - 1 || j == 0 || j == mHeight - 1) {
+                    if (i == 0 || i == mSize - 1 || j == 0 || j == mSize - 1) {
                         counter++;
                     }
                     black[i][j][1] = plaValue[counter][playerValue[1]];
                     playerValue[1] = 0;
                     counter = 0;
 
-                    for (int k = i + 1; k < mWidth; k++) {
+                    for (int k = i + 1; k < mSize; k++) {
 
-                        if (map[k][j] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][j] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[2]++;
                         }
                         if (map[k][j] == 0) {
                             break;
                         }
-                        if (map[k][j] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][j] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
-                        if (k == mWidth - 1) {
+                        if (k == mSize - 1) {
                             counter++;
                         }
                     }
 
                     for (int k = i - 1; k >= 0; k--) {
 
-                        if (map[k][j] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][j] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[2]++;
                         }
                         if (map[k][j] == 0) {
                             break;
                         }
-                        if (map[k][j] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][j] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
@@ -591,29 +613,29 @@ public class RobotAI implements AI{
                             counter++;
                         }
                     }
-                    if (i == 0 || i == mWidth - 1) {
+                    if (i == 0 || i == mSize - 1) {
                         counter++;
                     }
                     black[i][j][2] = plaValue[counter][playerValue[2]];
                     playerValue[2] = 0;
                     counter = 0;
 
-                    for (int k = i - 1, l = j + 1; l < mHeight; k--, l++) {
+                    for (int k = i - 1, l = j + 1; l < mSize; k--, l++) {
 
                         if (k < 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[3]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
-                        if (k == 0 || l == mHeight - 1) {
+                        if (k == 0 || l == mSize - 1) {
                             counter++;
                         }
 
@@ -621,25 +643,25 @@ public class RobotAI implements AI{
 
                     for (int k = i + 1, l = j - 1; l >= 0; k++, l--) {
 
-                        if (k >= mWidth) {
+                        if (k >= mSize) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_WHITE) {
+                        if (map[k][l] == FiveChessPanel.TYPE_WHITE) {
                             playerValue[3]++;
                         }
                         if (map[k][l] == 0) {
                             break;
                         }
-                        if (map[k][l] == WuziqiPanel.TYPE_BLACK) {
+                        if (map[k][l] == FiveChessPanel.TYPE_BLACK) {
                             counter++;
                             break;
                         }
-                        if (k == mWidth - 1 || l == 0) {
+                        if (k == mSize - 1 || l == 0) {
                             counter++;
                         }
 
                     }
-                    if (i == 0 || i == mWidth - 1 || j == 0 || j == mHeight - 1) {
+                    if (i == 0 || i == mSize - 1 || j == 0 || j == mSize - 1) {
                         counter++;
                     }
                     black[i][j][3] = plaValue[counter][playerValue[3]];
@@ -748,7 +770,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i > 0 && j < mHeight - 1) {
+                    if (i > 0 && j < mSize - 1) {
                         if (map[i - 1][j + 1] == 0) {
                             if (black[i - 1][j + 1][3] >= 166) {
                                 for (int k = 0; k < 4; k++) {
@@ -762,7 +784,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (j < mHeight - 1) {
+                    if (j < mSize - 1) {
                         if (map[i][j + 1] == 0) {
                             if (black[i][j + 1][0] >= 166) {
                                 for (int k = 0; k < 4; k++) {
@@ -776,7 +798,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i < mWidth - 1 && j < mHeight - 1) {
+                    if (i < mSize - 1 && j < mSize - 1) {
                         if (map[i + 1][j + 1] == 0) {
                             if (black[i + 1][j + 1][1] >= 166) {
                                 for (int k = 0; k < 4; k++) {
@@ -790,7 +812,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i < mWidth - 1) {
+                    if (i < mSize - 1) {
                         if (map[i + 1][j] == 0) {
                             if (black[i + 1][j][2] >= 166) {
                                 for (int k = 0; k < 4; k++) {
@@ -804,7 +826,7 @@ public class RobotAI implements AI{
                         }
                     }
 
-                    if (i < mWidth - 1 && j > 0) {
+                    if (i < mSize - 1 && j > 0) {
                         if (map[i + 1][j - 1] == 0) {
                             if (black[i + 1][j - 1][3] >= 166) {
                                 for (int k = 0; k < 4; k++) {
@@ -833,8 +855,8 @@ public class RobotAI implements AI{
         int blackCollum = 0;
         int whiteRow = 0;
         int whiteCollum = 0;
-        for (int i = 0; i < mWidth; i++) {
-            for (int j = 0; j < mHeight; j++) {
+        for (int i = 0; i < mSize; i++) {
+            for (int j = 0; j < mSize; j++) {
                 if (map[i][j] == 0) {
                     for (int k = 0; k < 4; k++) {
                         if (black[i][j][k] > maxpValue) {

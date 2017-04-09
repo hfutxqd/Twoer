@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,21 +20,19 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
 import xyz.imxqd.ta.R;
-import xyz.imxqd.ta.media.AudioPlayer;
 
 /**
  * Created by imxqd on 17-4-3.
  */
 
-public class WuziqiPanel extends View {
-    private static final String TAG = "WuziqiPanel";
+public class FiveChessPanel extends View {
+    private static final String TAG = "FiveChessPanel";
 
     public static final int TYPE_BLACK = 0x0001;
     public static final int TYPE_WHITE = 0x0010;
@@ -68,6 +67,8 @@ public class WuziqiPanel extends View {
     //已下的黑棋的列表
     private ArrayList<Point> mBlackPieceArray = new ArrayList<>();
 
+    private ArrayList<Point> mInLinePieceArray = new ArrayList<>();
+
     // 防止误触，类似于光标的棋子
     private Point mPieceHolder;
 
@@ -94,46 +95,46 @@ public class WuziqiPanel extends View {
         this.listener = listener;
     }
 
-    public WuziqiPanel(Context context) {
+    public FiveChessPanel(Context context) {
         this(context, null);
     }
 
-    public WuziqiPanel(Context context, AttributeSet attrs) {
+    public FiveChessPanel(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
 
     }
 
-    public WuziqiPanel(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FiveChessPanel(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         //获取xml中自定义的属性值并对相应的属性赋值
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WuziqiPanel);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FiveChessPanel);
         int n = a.getIndexCount();
         for (int i = 0; i < n; i++) {
             int attrName = a.getIndex(i);
             switch (attrName) {
                 //棋盘背景
-                case R.styleable.WuziqiPanel_panel_background:
+                case R.styleable.FiveChessPanel_panel_background:
                     Drawable panelBackground = a.getDrawable(attrName);
                     setBackground(panelBackground);
                     break;
                 //棋盘线的颜色
-                case R.styleable.WuziqiPanel_panel_line_color:
+                case R.styleable.FiveChessPanel_panel_line_color:
                     mPanelLineColor = a.getColor(attrName, 0x88000000);
                     break;
                 //白棋图片
-                case R.styleable.WuziqiPanel_white_piece_img:
+                case R.styleable.FiveChessPanel_white_piece_img:
                     BitmapDrawable whitePieceBitmap = (BitmapDrawable) a.getDrawable(attrName);
                     mWhitePiece = whitePieceBitmap.getBitmap();
                     break;
                 //黑棋图片
-                case R.styleable.WuziqiPanel_black_piece_img:
+                case R.styleable.FiveChessPanel_black_piece_img:
                     BitmapDrawable blackPieceBitmap = (BitmapDrawable) a.getDrawable(attrName);
                     mBlackPiece = blackPieceBitmap.getBitmap();
                     break;
-                case R.styleable.WuziqiPanel_max_count_line:
+                case R.styleable.FiveChessPanel_max_count_line:
                     MAX_LINE = a.getInteger(attrName, 10);
                     break;
-                case R.styleable.WuziqiPanel_max_win_count_piece:
+                case R.styleable.FiveChessPanel_max_win_count_piece:
                     MAX_COUNT_IN_LINE = a.getInteger(attrName, 5);
                     break;
             }
@@ -211,6 +212,7 @@ public class WuziqiPanel extends View {
         drawPieceHolder(canvas);
         drawPiece(canvas);
         checkGameOver();
+        drawInLine(canvas);
     }
 
     //重新开始游戏
@@ -252,11 +254,10 @@ public class WuziqiPanel extends View {
             int x = point.x;
             int y = point.y;
 
-            boolean checkHorizontal = checkHorizontalFiveInLine(x, y, points);
-            boolean checkVertical = checkVerticalFiveInLine(x, y, points);
-            boolean checkLeftDiagonal = checkLeftDiagonalFiveInLine(x, y, points);
-            boolean checkRightDiagonal = checkRightDiagonalFiveInLine(x, y, points);
-            if (checkHorizontal || checkVertical || checkLeftDiagonal || checkRightDiagonal) {
+            if (checkHorizontalFiveInLine(x, y, points) ||
+                    checkVerticalFiveInLine(x, y, points) ||
+                    checkLeftDiagonalFiveInLine(x, y, points) ||
+                    checkRightDiagonalFiveInLine(x, y, points)) {
                 return true;
             }
         }
@@ -267,25 +268,33 @@ public class WuziqiPanel extends View {
     //检查向右斜的线上有没有相同棋子的五子连珠
     private boolean checkRightDiagonalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
+        ArrayList<Point> inLines = new ArrayList<>();
+        inLines.add(new Point(x, y));
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x - i, y - i))) {
                 count++;
+                inLines.add(new Point(x - i, y - i));
             } else {
                 break;
             }
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkRightDiagonalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x + i, y + i))) {
                 count++;
+                inLines.add(new Point(x + i, y + i));
             } else {
                 break;
             }
 
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkRightDiagonalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         return false;
@@ -294,25 +303,33 @@ public class WuziqiPanel extends View {
     //检查向左斜的线上有没有相同棋子的五子连珠
     private boolean checkLeftDiagonalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
+        ArrayList<Point> inLines = new ArrayList<>();
+        inLines.add(new Point(x, y));
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x - i, y + i))) {
                 count++;
+                inLines.add(new Point(x - i, y + i));
             } else {
                 break;
             }
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkLeftDiagonalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x + i, y - i))) {
                 count++;
+                inLines.add(new Point(x + i, y - i));
             } else {
                 break;
             }
 
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkLeftDiagonalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         return false;
@@ -321,25 +338,33 @@ public class WuziqiPanel extends View {
     //检查竖线上有没有相同棋子的五子连珠
     private boolean checkVerticalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
+        ArrayList<Point> inLines = new ArrayList<>();
+        inLines.add(new Point(x, y));
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x, y + i))) {
                 count++;
+                inLines.add(new Point(x, y + i));
             } else {
                 break;
             }
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkVerticalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x, y - i))) {
                 count++;
+                inLines.add(new Point(x, y - i));
             } else {
                 break;
             }
 
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkVerticalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         return false;
@@ -348,25 +373,33 @@ public class WuziqiPanel extends View {
     //检查横线上有没有相同棋子的五子连珠
     private boolean checkHorizontalFiveInLine(int x, int y, List<Point> points) {
         int count = 1;
+        ArrayList<Point> inLines = new ArrayList<>();
+        inLines.add(new Point(x, y));
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x - i, y))) {
                 count++;
+                inLines.add(new Point(x - i, y));
             } else {
                 break;
             }
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkHorizontalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         for (int i = 1; i < MAX_COUNT_IN_LINE; i++) {
             if (points.contains(new Point(x + i, y))) {
                 count++;
+                inLines.add(new Point(x + i, y));
             } else {
                 break;
             }
 
         }
         if (count == MAX_COUNT_IN_LINE) {
+            Log.d(TAG, "checkHorizontalFiveInLine: " + count);
+            mInLinePieceArray = inLines;
             return true;
         }
         return false;
@@ -409,6 +442,20 @@ public class WuziqiPanel extends View {
         }
     }
 
+    private void drawInLine(Canvas canvas) {
+        Log.d(TAG, "drawInLine: " + mInLinePieceArray);
+
+        if (mGameWinResult != INIT_WIN) {
+            int color = mPaint.getColor();
+            mPaint.setColor(Color.RED);
+            for (Point p : mInLinePieceArray) {
+                canvas.drawCircle((p.x + 0.5f) * mLineHeight,
+                        (p.y + 0.5f) * mLineHeight, 8, mPaint);
+            }
+            mPaint.setColor(color);
+        }
+    }
+
     //绘制棋盘
     private void drawBoard(Canvas canvas) {
         int w = mPanelWidth;
@@ -422,7 +469,23 @@ public class WuziqiPanel extends View {
             canvas.drawLine(startX, y, endX, y, mPaint);//画横线
             canvas.drawLine(y, startX, y, endX, mPaint);//画竖线
         }
+        drawStars(canvas);
 
+    }
+
+    private void drawStars(Canvas canvas) {
+        if (MAX_LINE == 15) {
+            canvas.drawCircle(3.5f * mLineHeight,
+                    11.5f * mLineHeight, 8, mPaint);
+            canvas.drawCircle(11.5f * mLineHeight,
+                    3.5f * mLineHeight, 8, mPaint);
+            canvas.drawCircle(11.5f * mLineHeight,
+                    11.5f * mLineHeight, 8, mPaint);
+            canvas.drawCircle(3.5f * mLineHeight,
+                    3.5f * mLineHeight, 8, mPaint);
+            canvas.drawCircle(7.5f * mLineHeight,
+                    7.5f * mLineHeight, 8, mPaint);
+        }
     }
 
     /**
@@ -459,6 +522,9 @@ public class WuziqiPanel extends View {
         if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {
             return false;
         }
+        if (mGameWinResult != INIT_WIN) {
+            return false;
+        }
         if (mIsWhite && type == TYPE_WHITE) {
             Log.d(TAG, "addWhitePiece: " + p);
             mPlayer.start();
@@ -473,7 +539,7 @@ public class WuziqiPanel extends View {
             mBlackPieceArray.add(p);
             mIsWhite = true;
             mPieceHolder = p;
-            invalidate();
+            postInvalidate();
             return true;
         }
 
@@ -510,7 +576,7 @@ public class WuziqiPanel extends View {
             mWhitePieceArray.remove(mBlackPieceArray.size() - 1);
         }
         mIsWhite = !mIsWhite;
-        invalidate();
+        postInvalidate();
     }
 
     @Override

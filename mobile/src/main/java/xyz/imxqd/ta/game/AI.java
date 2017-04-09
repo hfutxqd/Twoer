@@ -9,5 +9,8 @@ import java.util.List;
  */
 
 public interface AI {
-    Point nextPoint(List<Point> whites, List<Point> blacks);
+    void initBoard(List<Point> whites, List<Point> blacks);
+    void addPoint(Point p);
+    void reset();
+    Point nextBest();
 }

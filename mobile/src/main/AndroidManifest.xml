@@ -41,10 +41,9 @@
         <activity
             android:name=".ui.activities.InvitationActivity"
             android:theme="@style/DialogActivity" />
-
         <activity
             android:name=".ui.activities.GameActivity"
-            android:label="@string/title_activity_game"/>
+            android:label="@string/title_activity_game" />
 
         <!-- imlib config begin -->
         <meta-data
@@ -123,7 +122,9 @@
             android:enabled="true"
             android:exported="true" />
 
-
+        <activity
+            android:name=".ui.activities.GameSettingsActivity"
+            android:label="@string/title_activity_game_settings"></activity>
     </application>
 
 </manifest>

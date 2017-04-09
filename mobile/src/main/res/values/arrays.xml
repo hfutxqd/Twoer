@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_ai_level">
+        <item>幼稚</item>
+        <item>简单</item>
+        <item>一般</item>
+        <item>困难</item>
+        <item>大师</item>
+        <item>顶级</item>
+    </string-array>
+
+    <string-array name="pref_ai_level_values">
+        <item>0</item>
+        <item>1000</item>
+        <item>3000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>20000</item>
+    </string-array>
+
+    <string name="pref_ai_level_default_values">3000</string>
+</resources>

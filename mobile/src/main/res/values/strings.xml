@@ -51,5 +51,8 @@
     <string name="game_control_restart">重来</string>
     <string name="bind_fragment_title">扫描二维码</string>
     <string name="bind_fragment_text_default">扫描此二维码即可与你绑定</string>
+    <string name="title_activity_game_settings">游戏设置</string>
 
+    <string name="action_game_settings">游戏设置</string>
+    <string name="pref_title_ai_level">电脑AI级别</string>
 </resources>

@@ -2,6 +2,7 @@ package xyz.imxqd.ta.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 
 import xyz.imxqd.ta.App;
@@ -40,5 +41,11 @@ public class UserSettings {
     public static String getUserId(Context context) {
         return Settings.System.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+    }
+
+
+    public static int getAILevel(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.valueOf(preferences.getString("ai_level", "2000"));
     }
 }
