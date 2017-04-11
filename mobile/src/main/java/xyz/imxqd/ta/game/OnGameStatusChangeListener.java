@@ -9,6 +9,8 @@ import android.graphics.Point;
 public interface OnGameStatusChangeListener {
 
 
-    void onPlacePiece(@FiveChessPanel.Type int type, Point point);
+    void onPlacePiece(@FiveChessPanel.PieceType int type, Point point);
+    void onUndo(@FiveChessPanel.PieceType int type, Point point);
     void onGameOver(int gameWinResult);//游戏结束
+    void onGameRestart();
 }

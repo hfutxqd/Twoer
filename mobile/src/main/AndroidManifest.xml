@@ -43,7 +43,13 @@
             android:theme="@style/DialogActivity" />
         <activity
             android:name=".ui.activities.GameActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_game" />
+
+        <activity
+            android:name=".ui.activities.GameSettingsActivity"
+            android:label="@string/title_activity_game_settings" />
 
         <!-- imlib config begin -->
         <meta-data
@@ -122,9 +128,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity
-            android:name=".ui.activities.GameSettingsActivity"
-            android:label="@string/title_activity_game_settings"></activity>
     </application>
 
 </manifest>

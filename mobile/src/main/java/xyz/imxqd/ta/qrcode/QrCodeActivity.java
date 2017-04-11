@@ -306,9 +306,9 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
     }
 
     /**
-     * When the beep has finished playing, rewind to queue up another one.
+     * 改为static，防止内存泄漏
      */
-    private final MediaPlayer.OnCompletionListener mBeepListener = new MediaPlayer.OnCompletionListener() {
+    private static final MediaPlayer.OnCompletionListener mBeepListener = new MediaPlayer.OnCompletionListener() {
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.seekTo(0);
         }

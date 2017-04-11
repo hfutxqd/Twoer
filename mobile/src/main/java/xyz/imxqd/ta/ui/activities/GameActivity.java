@@ -1,16 +1,18 @@
 package xyz.imxqd.ta.ui.activities;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -32,7 +34,8 @@ import static xyz.imxqd.ta.game.FiveChessPanel.TYPE_BLACK;
 import static xyz.imxqd.ta.game.FiveChessPanel.TYPE_WHITE;
 
 public class GameActivity extends AppCompatActivity implements SoundRecordFragment.RecordCallback,
-        ShockRecordFragment.RecordCallback{
+        ShockRecordFragment.RecordCallback, GameControlFragment.OnButtonClickCallback,
+        OnGameStatusChangeListener {
 
     private static final String TAG = "GameActivity";
 
@@ -40,7 +43,11 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
     private ViewPager mViewPager;
     private AI mAi;
 
-    private Handler mHander = new Handler(new Handler.Callback() {
+    private GameControlFragment mGameControlFragment;
+
+    private Handler mAIHandler;
+
+    private Handler mUIHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
@@ -59,60 +66,32 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
         }
     });
 
+    private HandlerThread mAIThread = new HandlerThread("GameAI");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-        int timeout = UserSettings.getAILevel(this);
-        if (timeout == 0) {
-            mAi = new RobotAI(15);
-        } else {
-            mAi = new RobotAI2(15, timeout);
-        }
-        Log.d(TAG, "onCreate: " + timeout);
-        mAi.reset();
+        mAIThread.start();
+        mAIHandler = new Handler(mAIThread.getLooper());
 
         mGamePanel = (FiveChessPanel) findViewById(R.id.id_wuziqi);
         mGamePanel.setTouchDisable(TYPE_WHITE);
-        mGamePanel.setOnGameStatusChangeListener(new OnGameStatusChangeListener() {
-            @Override
-            public void onPlacePiece(final int type, Point point) {
-                mAi.initBoard(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final Point p = mAi.nextBest();
-                        Log.d(TAG, "run: " + p);
-                        if (type == FiveChessPanel.TYPE_BLACK) {
-                            mHander.sendMessage(mHander.obtainMessage(TYPE_WHITE, p.x, p.y));
-                        } else {
-                            mHander.sendMessage(mHander.obtainMessage(FiveChessPanel.TYPE_BLACK, p.x, p.y));
-                        }
-                    }
-                }).start();
-
-
-            }
-
-            @Override
-            public void onGameOver(int gameWinResult) {
-
-            }
-        });
+        mGamePanel.setOnGameStatusChangeListener(this);
 
         mViewPager = (ViewPager) findViewById(R.id.game_view_pager);
+        mGameControlFragment = GameControlFragment.newInstance();
+        mGameControlFragment.setYourPieceType(TYPE_BLACK);
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return GameControlFragment.newInstance();
+                        return mGameControlFragment;
                     case 1:
                         return SoundRecordFragment.newInstance();
                     case 2:
@@ -127,6 +106,29 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
             }
         });
         mViewPager.setOffscreenPageLimit(3);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAIThread.quitSafely();
+        mAIHandler = null;
+    }
+
+    private void initAI() {
+        int timeout = UserSettings.getAILevel(this);
+        if (timeout == 0) {
+            mAi = new RobotAI(15);
+        } else {
+            mAi = new RobotAI2(15, timeout);
+        }
+        mAi.reset();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initAI();
     }
 
     @Override
@@ -163,5 +165,58 @@ public class GameActivity extends AppCompatActivity implements SoundRecordFragme
     @Override
     public void onSoundRecordingSend(TVoiceMessage msg) {
 
+    }
+
+    @Override
+    public void onGameButtonClick(int actionType) {
+        if (actionType == GameControlFragment.ACTION_UNDO) {
+            mGamePanel.undo();
+        } else if (actionType == GameControlFragment.ACTION_RESTART) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.message_game_restart)
+                    .setNegativeButton(R.string.btn_cancel, null)
+                    .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mGamePanel.restartGame();
+                            mAi.reset();
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
+        }
+    }
+
+    @Override
+    public void onPlacePiece(final int type, Point point) {
+        if (type == TYPE_BLACK) {
+            mGameControlFragment.setCurrentPieceType(TYPE_WHITE);
+            mAi.initBoard(mGamePanel.getWhitePieces(), mGamePanel.getBlackPieces());
+            mAIHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    final Point p = mAi.nextBest();
+                    mUIHandler.sendMessage(mUIHandler.obtainMessage(TYPE_WHITE, p.x, p.y));
+                }
+            });
+
+        } else {
+            mGameControlFragment.setCurrentPieceType(TYPE_BLACK);
+        }
+    }
+
+    @Override
+    public void onUndo(@FiveChessPanel.PieceType int type, Point point) {
+        mGameControlFragment.setCurrentPieceType(type);
+    }
+
+    @Override
+    public void onGameOver(int gameWinResult) {
+
+    }
+
+    @Override
+    public void onGameRestart() {
+        mGameControlFragment.setCurrentPieceType(TYPE_BLACK);
     }
 }

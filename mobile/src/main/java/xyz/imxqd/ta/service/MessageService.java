@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mobvoi.android.common.api.MobvoiApiClient;
 import com.mobvoi.android.wearable.DataApi;
@@ -25,7 +24,6 @@ import io.rong.imlib.model.MessageContent;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 import xyz.imxqd.ta.Constants;
-import xyz.imxqd.ta.R;
 import xyz.imxqd.ta.im.model.TBindMessage;
 import xyz.imxqd.ta.im.model.TShockMessage;
 import xyz.imxqd.ta.im.model.TVoiceMessage;
@@ -48,7 +46,7 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
 
     private BindCallback mBindCallback;
 
-    private Handler mHander = new Handler(Looper.getMainLooper());
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
 
     public MessageService() {
@@ -67,7 +65,15 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind: ");
         return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind: ");
+        mBindCallback = null;
+        return true;
     }
 
     @Override
@@ -87,7 +93,7 @@ public class MessageService extends Service implements RongIMClient.OnReceiveMes
                     if (m.getSenderId().equals(UserSettings.readString(Constants.SETTING_TARGET_ID))) {
                         UserSettings.save(Constants.SETTING_ACCEPTED, true);
                         if (mBindCallback != null) {
-                            mHander.post(new Runnable() {
+                            mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     mBindCallback.onAccept();

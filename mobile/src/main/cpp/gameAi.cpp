@@ -14,7 +14,7 @@
 
 using namespace std;
 
-AI wine;
+static AI wine;
 
 int gomocup() {
     string command;
@@ -118,6 +118,7 @@ JNIEXPORT void JNICALL
 Java_xyz_imxqd_ta_game_RobotAI2_initBoard(JNIEnv *env, jobject instance, jobjectArray map,
                                           jint size) {
     LOGI("init board...");
+    wine.stopThink = true;
     wine.ReStart();
     Pos m;
     for (jint i = 0; i < size; i++) {
@@ -140,6 +141,7 @@ Java_xyz_imxqd_ta_game_RobotAI2_initBoard(JNIEnv *env, jobject instance, jobject
 extern "C"
 JNIEXPORT void JNICALL
 Java_xyz_imxqd_ta_game_RobotAI2_start(JNIEnv *env, jobject instance, jint size) {
+    wine.stopThink = true;
     wine.SetSize(size);
 }
 

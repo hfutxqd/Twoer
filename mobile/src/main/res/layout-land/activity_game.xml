@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="xyz.imxqd.ta.ui.activities.GameActivity">
+    <xyz.imxqd.ta.game.FiveChessPanel
+        android:id="@+id/id_wuziqi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:panel_background="@drawable/bg_wuziqi"
+        app:panel_line_color="@color/black_full"
+        app:white_piece_img="@drawable/stone_white"
+        app:black_piece_img="@drawable/stone_black"
+        app:max_count_line="15"
+        app:max_win_count_piece="5"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/game_view_pager"
+        android:layout_toEndOf="@id/id_wuziqi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:piv_viewPager="@id/game_view_pager"
+        app:piv_animationType="worm"
+        app:piv_radius="3dp"
+        app:piv_orientation="vertical"
+        app:piv_unselectedColor="@color/black_6p"
+        app:piv_selectedColor="@color/colorAccent"/>
+</RelativeLayout>

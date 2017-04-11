@@ -26,7 +26,7 @@
     <string name="qrcode_menu_photo">照片</string>
 
 
-    <string name="fisrt_title_1">给最亲密的TA</string>
+    <string name="fisrt_title_1">开头语：balabala…</string>
     <string name="fisrt_title_2">绑定帐号</string>
     <string name="fisrt_des_2">向左滑动，扫描二维码绑定帐号</string>
     <string name="bind_fragment_scan">扫一扫</string>
@@ -55,4 +55,10 @@
 
     <string name="action_game_settings">游戏设置</string>
     <string name="pref_title_ai_level">电脑AI级别</string>
+    <string name="action_game_help">提示</string>
+    <string name="message_game_restart">确定要重新开始吗？</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_ok">确定</string>
+    <string name="game_control_me">我</string>
+    <string name="game_control_ta">TA</string>
 </resources>

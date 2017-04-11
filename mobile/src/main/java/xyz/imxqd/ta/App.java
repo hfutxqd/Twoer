@@ -3,6 +3,8 @@ package xyz.imxqd.ta;
 import android.app.Application;
 import android.content.Intent;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import xyz.imxqd.ta.im.Client;
 import xyz.imxqd.ta.service.MessageService;
 import xyz.imxqd.ta.service.WatchService;
@@ -18,6 +20,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        LeakCanary.install(this);
         Client.init(this);
         app = this;
         startService(new Intent(this, WatchService.class));

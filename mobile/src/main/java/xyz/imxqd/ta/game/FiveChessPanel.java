@@ -42,7 +42,7 @@ public class FiveChessPanel extends View {
             TYPE_BLACK, TYPE_WHITE
     })
     @Retention(RetentionPolicy.SOURCE)
-    @interface Type {
+    public @interface PieceType {
     }
 
     private int mPanelWidth;       //棋盘宽度
@@ -221,7 +221,11 @@ public class FiveChessPanel extends View {
         mBlackPieceArray.clear();
         mPieceHolder = null;
         mIsGameOver = false;
+        mIsWhite = false;
         mGameWinResult = INIT_WIN;
+        if (listener != null) {
+            listener.onGameRestart();
+        }
         invalidate();
     }
 
@@ -516,7 +520,7 @@ public class FiveChessPanel extends View {
      * @param p 落点
      * @return 落子是否成功
      */
-    public boolean addPiece(@Type int type, Point p) {
+    public boolean addPiece(@PieceType int type, Point p) {
         Log.d(TAG, "addPiece#type: " + type);
         Log.d(TAG, "addPiece#isWhite: " + mIsWhite);
         if (mWhitePieceArray.contains(p) || mBlackPieceArray.contains(p)) {
@@ -531,6 +535,9 @@ public class FiveChessPanel extends View {
             mWhitePieceArray.add(p);
             mIsWhite = false;
             mPieceHolder = p;
+            if (listener != null) {
+                listener.onPlacePiece(TYPE_WHITE, p);
+            }
             invalidate();
             return true;
         } else if (!mIsWhite && type == TYPE_BLACK) {
@@ -539,6 +546,9 @@ public class FiveChessPanel extends View {
             mBlackPieceArray.add(p);
             mIsWhite = true;
             mPieceHolder = p;
+            if (listener != null) {
+                listener.onPlacePiece(TYPE_WHITE, p);
+            }
             postInvalidate();
             return true;
         }
@@ -547,10 +557,20 @@ public class FiveChessPanel extends View {
     }
 
     /**
+     * 判断是否是一盘新的游戏
+     * @return
+     */
+    public boolean isANewGame() {
+        return mGameWinResult == INIT_WIN
+                && mWhitePieceArray.size() == 0
+                && mBlackPieceArray.size() == 0;
+    }
+
+    /**
      * 手动指定当前落子者
      * @param type
      */
-    public void setCurrentPlaer(@Type int type) {
+    public void setCurrentPlaer(@PieceType int type) {
         if (type == TYPE_BLACK) {
             mIsWhite = false;
         } else {
@@ -571,11 +591,21 @@ public class FiveChessPanel extends View {
      */
     public void undo() {
         if (mIsWhite && mBlackPieceArray.size() > 0) {
-            mBlackPieceArray.remove(mBlackPieceArray.size() - 1);
+            Point p = mBlackPieceArray.get(mBlackPieceArray.size() - 1);
+            mBlackPieceArray.remove(p);
+            mIsWhite = false;
+            if (listener != null) {
+                listener.onUndo(TYPE_BLACK, p);
+            }
         } else if (!mIsWhite && mWhitePieceArray.size() > 0) {
-            mWhitePieceArray.remove(mBlackPieceArray.size() - 1);
+            Point p = mWhitePieceArray.get(mWhitePieceArray.size() - 1);
+            mWhitePieceArray.remove(p);
+            mIsWhite = true;
+            if (listener != null) {
+                listener.onUndo(TYPE_WHITE, p);
+            }
         }
-        mIsWhite = !mIsWhite;
+        checkGameOver();
         postInvalidate();
     }
 
