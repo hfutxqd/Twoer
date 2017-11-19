@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':advancetoast'
+include ':mobile', ':advancetoast'

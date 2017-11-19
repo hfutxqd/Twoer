@@ -7,7 +7,6 @@ import com.squareup.leakcanary.LeakCanary;
 
 import xyz.imxqd.ta.im.Client;
 import xyz.imxqd.ta.service.MessageService;
-import xyz.imxqd.ta.service.WatchService;
 
 /**
  * Created by imxqd on 2017/3/31.
@@ -23,7 +22,6 @@ public class App extends Application {
         LeakCanary.install(this);
         Client.init(this);
         app = this;
-        startService(new Intent(this, WatchService.class));
         startService(new Intent(this, MessageService.class));
     }
 

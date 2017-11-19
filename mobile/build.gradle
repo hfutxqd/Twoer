@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.ticwear.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "xyz.imxqd.ta"
         minSdkVersion 18
@@ -32,14 +31,15 @@ android {
             path "CMakeLists.txt"
         }
     }
+    defaultConfig {
+        ndk {
+            abiFilter 'armeabi'
+            abiFilters "x86"
+        }
+    }
 
     productFlavors {
-        defaultConfig {
-            ndk {
-                abiFilter 'armeabi'
-                abiFilters "x86"
-            }
-        }
+
     }
 
     sourceSets {
@@ -52,19 +52,15 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    wearApp project(':wear')
-    compile 'com.google.android.gms:play-services-wearable:10.2.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile 'com.hwangjr.rxbus:rxbus:1.0.5'
-    compile 'org.jsoup:jsoup:1.10.2'
-    compile 'com.ticwear:mobvoi-api-gms-china:1.0.3'
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'org.jsoup:jsoup:1.10.3'
+    compile 'com.android.support:support-v4:26.1.0'
     compile 'com.google.zxing:core:3.3.0'
     compile 'com.stephentuso:welcome:1.2.1'
     compile 'com.romandanylyk:pageindicatorview:0.1.2'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-//    debugCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }
