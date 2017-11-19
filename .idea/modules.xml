@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://E:\Code\Android\Twoer\TA.iml" filepath="E:\Code\Android\Twoer\TA.iml" />
       <module fileurl="file://$PROJECT_DIR$/Twoer.iml" filepath="$PROJECT_DIR$/Twoer.iml" />
       <module fileurl="file://$PROJECT_DIR$/advancetoast/advancetoast.iml" filepath="$PROJECT_DIR$/advancetoast/advancetoast.iml" />
-      <module fileurl="file://E:\Code\Android\Twoer\advancetoast\advancetoast.iml" filepath="E:\Code\Android\Twoer\advancetoast\advancetoast.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
-      <module fileurl="file://E:\Code\Android\Twoer\mobile\mobile.iml" filepath="E:\Code\Android\Twoer\mobile\mobile.iml" />
-      <module fileurl="file://E:\Code\Android\Twoer\wear\wear.iml" filepath="E:\Code\Android\Twoer\wear\wear.iml" />
     </modules>
   </component>
 </project>
