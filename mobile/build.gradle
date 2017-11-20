@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "xyz.imxqd.ta"
+        applicationId "xyz.imxqd.twoer"
         minSdkVersion 18
         targetSdkVersion 22
         versionCode 1

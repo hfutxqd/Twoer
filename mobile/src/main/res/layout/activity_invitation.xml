@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="xyz.imxqd.ta.ui.activities.InvitationActivity">
+    tools:context="xyz.imxqd.twoer.ui.activities.InvitationActivity">
     <TextView
         android:id="@+id/invitation_text"
         android:text="@string/invitation_text"

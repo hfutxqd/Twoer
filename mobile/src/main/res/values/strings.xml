@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TA</string>
+    <string name="app_name">Twoer</string>
     <string name="voice_press_to_record">按下录音</string>
     <string name="voice_release_to_send">释放发送</string>
     <string name="voice_release_to_cancel">释放取消</string>
@@ -60,5 +60,5 @@
     <string name="btn_cancel">取消</string>
     <string name="btn_ok">确定</string>
     <string name="game_control_me">我</string>
-    <string name="game_control_ta">TA</string>
+    <string name="game_control_ta">AI</string>
 </resources>

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="xyz.imxqd.ta.ui.activities.GameActivity">
-    <xyz.imxqd.ta.game.FiveChessPanel
+    tools:context="xyz.imxqd.twoer.ui.activities.GameActivity">
+    <xyz.imxqd.twoer.game.FiveChessPanel
         android:id="@+id/id_wuziqi"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

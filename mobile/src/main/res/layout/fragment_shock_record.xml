@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="xyz.imxqd.ta.ui.fragments.ShockRecordFragment">
+    tools:context="xyz.imxqd.twoer.ui.fragments.ShockRecordFragment">
 
     <View
         android:id="@+id/shock_bg_view"

@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="xyz.imxqd.ta.ui.fragments.ChatFragment"
+    tools:context="xyz.imxqd.twoer.ui.fragments.ChatFragment"
     tools:listitem="@layout/fragment_chat" />

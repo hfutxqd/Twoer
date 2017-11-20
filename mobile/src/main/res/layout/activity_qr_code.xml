@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:visibility="visible"/>
 
-    <xyz.imxqd.ta.qrcode.view.QrCodeFinderView
+    <xyz.imxqd.twoer.qrcode.view.QrCodeFinderView
         android:id="@+id/qr_code_view_finder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

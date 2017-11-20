@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:padding="16dp"
-    tools:context="xyz.imxqd.ta.ui.fragments.GameControlFragment">
+    tools:context="xyz.imxqd.twoer.ui.fragments.GameControlFragment">
 
     <TextView
         android:text="我"

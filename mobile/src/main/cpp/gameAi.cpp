@@ -109,13 +109,13 @@ int gomocup() {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_xyz_imxqd_ta_game_RobotAI2_restart(JNIEnv *env, jobject instance) {
+Java_xyz_imxqd_twoer_game_RobotAI2_restart(JNIEnv *env, jobject instance) {
     wine.ReStart();
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_xyz_imxqd_ta_game_RobotAI2_initBoard(JNIEnv *env, jobject instance, jobjectArray map,
+Java_xyz_imxqd_twoer_game_RobotAI2_initBoard(JNIEnv *env, jobject instance, jobjectArray map,
                                           jint size) {
     LOGI("init board...");
     wine.stopThink = true;
@@ -140,14 +140,14 @@ Java_xyz_imxqd_ta_game_RobotAI2_initBoard(JNIEnv *env, jobject instance, jobject
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_xyz_imxqd_ta_game_RobotAI2_start(JNIEnv *env, jobject instance, jint size) {
+Java_xyz_imxqd_twoer_game_RobotAI2_start(JNIEnv *env, jobject instance, jint size) {
     wine.stopThink = true;
     wine.SetSize(size);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_xyz_imxqd_ta_game_RobotAI2_turnMove(JNIEnv *env, jobject instance, jintArray p_) {
+Java_xyz_imxqd_twoer_game_RobotAI2_turnMove(JNIEnv *env, jobject instance, jintArray p_) {
     jint *p = env->GetIntArrayElements(p_, NULL);
     Pos pos;
     pos.x = p[0];
@@ -158,7 +158,7 @@ Java_xyz_imxqd_ta_game_RobotAI2_turnMove(JNIEnv *env, jobject instance, jintArra
 
 extern "C"
 JNIEXPORT jintArray JNICALL
-Java_xyz_imxqd_ta_game_RobotAI2_turnBest(JNIEnv *env, jobject instance) {
+Java_xyz_imxqd_twoer_game_RobotAI2_turnBest(JNIEnv *env, jobject instance) {
     Pos pos = wine.TurnBest();
     int *p = new int[2];
     p[0] = pos.x;
@@ -171,7 +171,7 @@ Java_xyz_imxqd_ta_game_RobotAI2_turnBest(JNIEnv *env, jobject instance) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_xyz_imxqd_ta_game_RobotAI2_setTimeout(JNIEnv *env, jobject instance, jint timeout) {
+Java_xyz_imxqd_twoer_game_RobotAI2_setTimeout(JNIEnv *env, jobject instance, jint timeout) {
     wine.timeout_turn = timeout;
 }
 

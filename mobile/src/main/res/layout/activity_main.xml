@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="xyz.imxqd.ta.ui.activities.MainActivity"
+    tools:context="xyz.imxqd.twoer.ui.activities.MainActivity"
     android:orientation="vertical">
 
     <fragment
         android:id="@+id/fragment"
-        android:name="xyz.imxqd.ta.ui.fragments.ShockRecordFragment"
+        android:name="xyz.imxqd.twoer.ui.fragments.ShockRecordFragment"
         android:layout_width="match_parent"
         android:layout_height="200dp" />
 
     <fragment
         android:id="@+id/fragment2"
-        android:name="xyz.imxqd.ta.ui.fragments.SoundRecordFragment"
+        android:name="xyz.imxqd.twoer.ui.fragments.SoundRecordFragment"
         android:layout_width="match_parent"
         android:layout_height="200dp" />
 
